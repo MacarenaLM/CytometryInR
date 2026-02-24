@@ -1730,5 +1730,19 @@
     "title": "03 - Inside an FCS File",
     "section": "flowCore Parameters",
     "text": "flowCore Parameters\n\n\n\n\n\n\n\n\n.\n\n\nDepending on the arguments selected during read.FCS(), we might also encounter additional keywords that are added in by flowCore. For example, we do not see these keywords when “transformation” is set to FALSE.\n\n\n\n\n\n\n\nflowCoreCheck &lt;- read.FCS(filename=firstfile,\n transformation = FALSE, truncate_max_range = FALSE)\n\nflowCoreCheck\n\nflowFrame object 'CellCounts4L_AB_05-ND050-05.fcs'\nwith 100 cells and 61 observables:\n       name   desc     range  minRange  maxRange\n$P1    Time     NA    272140         0    272139\n$P2   UV1-A     NA   4194304      -111   4194303\n$P3   UV2-A     NA   4194304      -111   4194303\n$P4   UV3-A     NA   4194304      -111   4194303\n$P5   UV4-A     NA   4194304      -111   4194303\n...     ...    ...       ...       ...       ...\n$P57   R4-A     NA   4194304      -111   4194303\n$P58   R5-A     NA   4194304      -111   4194303\n$P59   R6-A     NA   4194304      -111   4194303\n$P60   R7-A     NA   4194304      -111   4194303\n$P61   R8-A     NA   4194304      -111   4194303\n476 keywords are stored in the 'description' slot"
+  },
+  {
+    "objectID": "course/01_InstallingRPackages/homeworks/MacarenaLM-w1/Problem3-w1.html",
+    "href": "course/01_InstallingRPackages/homeworks/MacarenaLM-w1/Problem3-w1.html",
+    "title": "Problem 3_Installation of packages using Pak",
+    "section": "",
+    "text": "# First, *pak* needs to be installed\n\ninstall.packages(\"pak\")\n\n\n# Then, *pak* needs to be activated\nlibrary(pak)\n\nNow, I can install broom, cytoMEM and DillonHammill/CytoExploreR using pak. Let’s go! ## broom\n\n# *broom* is a package located in the CRAN repository\npak::pkg_install(\"broom\")\n\n¡"
+  },
+  {
+    "objectID": "course/01_InstallingRPackages/homeworks/MacarenaLM-w1/problem3/Problem3-w1.html",
+    "href": "course/01_InstallingRPackages/homeworks/MacarenaLM-w1/problem3/Problem3-w1.html",
+    "title": "Problem 3_Installation of packages using Pak",
+    "section": "",
+    "text": "# First, *pak* needs to be installed\n\ninstall.packages(\"pak\")\n\n\n# Then, *pak* needs to be activated\nlibrary(pak)\n\nNow, I can install broom, cytoMEM and DillonHammill/CytoExploreR using pak. Let’s go! ## broom\n\n# *broom* is a package located in the CRAN repository\npak::pkg_install(\"broom\")\n\n¡"
   }
 ]
