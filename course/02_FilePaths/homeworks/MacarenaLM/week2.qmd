@@ -1,0 +1,200 @@
+---
+title: week2 homeworks
+author: Macarena López-Mayorga
+date: 2026-02-26
+format: html
+---
+# Problem 1
+First of all, I want to check where we are
+
+```{r}
+#| eval: FALSE
+getwd()
+```
+[1] "c:/Users/Macarena/CytometryInR"
+
+So, we are at the top, in the folder "CytometryInR". I'm going to use the file path function to indicate where is the USB unit
+
+```{r}
+#| eval: FALSE
+FoldersLocation <- file.path("E:")
+FoldersLocation
+```
+[1] "E:"
+
+Now, I want to see the files in the USB unit
+
+```{r}
+#| eval: FALSE
+list.files(path=FoldersLocation, full.names=FALSE, recursive=FALSE)
+```
+ [1] "all data microarrays"                         "Back Up Your Files to the Cloud.pdf"          "CABD meeting 01062020"                       
+ [4] "CABD_meeting01062020-9.pptx"                  "craneos  Bex3"                                "DE-standard-HOXD13-RBFOX2_29072015.pcrd"     
+ [7] "DE-standard-HOXD13-RBFOX2_29072015.pltd"      "Desktop DB"                                   "Desktop DF"                                  
+[10] "Entrega_GENext99-18_raw data microarrays EEE" "figuras y pies pdf"                           "FILEID.DAT"                                  
+[13] "FINDER.DAT"                                   "fotos Claudia imprimir"                       "Macarena pics backup 28032019"               
+[16] "New pics ISH PAE-LIMBS"                       "pics backup 08052019"                         "pics backup 29082018"                        
+[19] "presupuestos y vales pedido"                  "SanDiskSecureAccess"                          "SanDiskSecureAccessV3.1_win.exe"             
+[22] "sdh"                                          "System Volume Information"                    "TargetFolder"                                
+[25] "TEMA_II_ETICA_V2018.ppt"                      "TEMA_II_ETICA_V2019MLM.ppt"                   "Tema_IV_Reconocimiento_Dolor_2018.ppt"       
+[28] "Temario_especifico"                           "tesis"                                        "TheVolumeSettingsFolder"     
+
+```{r}
+#| eval: FALSE
+# To check that, indeed, there is no files in TargetFolder
+FilesPresent <- list.files("E:/TargetFolder", full.names=FALSE, recursive=FALSE)
+FilesPresent
+```
+character(0)
+
+So, R is able to "see" the files and folders in the USB unit. Now, I have a folder in my desktop, FCS DATA, with some fcs experiments. I'm going to copy some of them to the TargetFolder, in the USB unit.
+
+
+```{r}
+#| eval: FALSE
+# First, I want to name them and see the path and check if everything goes well
+MyFCSfiles <- list.files("C:/Users/Macarena/Desktop/FCS DATA/020425 3.0", pattern=".fcs", full.names=TRUE, recursive=FALSE)
+MyFCSfiles
+```
+ [1] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/1 SP BLANCO_Data Source - 1.fcs"                      
+ [2] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/10 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"          
+ [3] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/11 hBO LVDV +CD56 PercP-Cy5.5 - 1_Data Source - 1.fcs"
+ [4] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/2 SP CONTROL DAPI_Data Source - 1.fcs"                
+ [5] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/3 SP CD3 BV785 _Data Source - 1.fcs"                  
+ [6] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/4 SP CD172 PercP-eF710_Data Source - 1.fcs"           
+ [7] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/5 SP CD3+DAPI_Data Source - 1.fcs"                    
+ [8] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/6 SP CD172+DAPI_Data Source - 1.fcs"                  
+ [9] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/7 hBO BLANCO_Data Source - 1.fcs"                     
+[10] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/8 hBO LIVEDEAD_Data Source - 1.fcs"                   
+[11] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/9 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"   
+
+```{r}
+#| eval: FALSE
+# Now, I'm going to copy them to the folder in the USB unit
+file.copy(from=MyFCSfiles, to="E:/TargetFolder")
+```
+ [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+
+ They are already copied into the TargetFolder, in the USB unit
+
+```{r}
+#| eval: FALSE
+# to check the files in the TargetFolder
+FilesCopied <- list.files("E:/TargetFolder", full.names=FALSE, recursive=FALSE)
+FilesCopied
+```
+ [1] "1 SP BLANCO_Data Source - 1.fcs"                       "10 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"          
+ [3] "11 hBO LVDV +CD56 PercP-Cy5.5 - 1_Data Source - 1.fcs" "2 SP CONTROL DAPI_Data Source - 1.fcs"                
+ [5] "3 SP CD3 BV785 _Data Source - 1.fcs"                   "4 SP CD172 PercP-eF710_Data Source - 1.fcs"           
+ [7] "5 SP CD3+DAPI_Data Source - 1.fcs"                     "6 SP CD172+DAPI_Data Source - 1.fcs"                  
+ [9] "7 hBO BLANCO_Data Source - 1.fcs"                      "8 hBO LIVEDEAD_Data Source - 1.fcs"                   
+[11] "9 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs" 
+
+# Problem 2
+Let's see all files and folders present in "FCS DATA", in my desktop
+
+```{r}
+#| eval: FALSE
+AllFiles <- list.files("C:/Users/Macarena/Desktop/FCS DATA", full.names=TRUE, recursive=TRUE)
+AllFiles
+```
+ [1] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/1 SP BLANCO_Data Source - 1.fcs"                                                    
+ [2] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/10 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"                                        
+ [3] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/11 hBO LVDV +CD56 PercP-Cy5.5 - 1_Data Source - 1.fcs"                              
+ [4] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/2 SP CONTROL DAPI_Data Source - 1.fcs"                                              
+ [5] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/3 SP CD3 BV785 _Data Source - 1.fcs"                                                
+ [6] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/4 SP CD172 PercP-eF710_Data Source - 1.fcs"                                         
+ [7] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/5 SP CD3+DAPI_Data Source - 1.fcs"                                                  
+ [8] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/6 SP CD172+DAPI_Data Source - 1.fcs"                                                
+ [9] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/7 hBO BLANCO_Data Source - 1.fcs"                                                   
+[10] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/8 hBO LIVEDEAD_Data Source - 1.fcs"                                                 
+[11] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/9 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"                                         
+[12] "C:/Users/Macarena/Desktop/FCS DATA/020425 3.0/FCS_Floreada.xml"                                                                   
+[13] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/1 SP BLANCO_Data Source - 1.fcs"                      
+[14] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/10 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"          
+[15] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/11 hBO LVDV +CD56 PercP-Cy5.5 - 1_Data Source - 1.fcs"
+[16] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/2 SP CONTROL DAPI_Data Source - 1.fcs"                
+[17] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/3 SP CD3 BV785 _Data Source - 1.fcs"                  
+[18] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/4 SP CD172 PercP-eF710_Data Source - 1.fcs"           
+[19] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/5 SP CD3+DAPI_Data Source - 1.fcs"                    
+[20] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/6 SP CD172+DAPI_Data Source - 1.fcs"                  
+[21] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/7 hBO BLANCO_Data Source - 1.fcs"                     
+[22] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/8 hBO LIVEDEAD_Data Source - 1.fcs"                   
+[23] "C:/Users/Macarena/Desktop/FCS DATA/020425 RATON Y EMBRIOIDES 3.1/020425 3.1/9 hBO CD56 PercP-Cy5.5_Data Source - 1.fcs"           
+[24] "C:/Users/Macarena/Desktop/FCS DATA/curso citometría en R/FCS_Floreada.xml"                                                        
+[25] "C:/Users/Macarena/Desktop/FCS DATA/curso citometría en R/FCS_FlowJO.wsp"      
+
+Searching online I found this code that seems the most easiest one to remember
+```{r}
+#| eval: FALSE
+AllDirectories <- list.dirs("C:/Users/Macarena/Desktop/FCS DATA", recursive = FALSE, full.names = FALSE)
+AllDirectories
+```
+[1] "020425 3.0"                    "020425 RATON Y EMBRIOIDES 3.1" "curso citometría en R"  
+
+With this code, R only show you the folders in "FCS DATA"
+
+# Problem 3
+First, I need to know the path of FlowSOM and flowWorkspace
+
+```{r}
+#| eval: FALSE
+system.file("extdata", package = "FlowSOM")
+```
+[1] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata"
+
+
+```{r}
+#| eval: FALSE
+system.file("extdata", package = "flowWorkspace")
+```
+[1] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/flowWorkspace/extdata"
+
+
+```{r}
+#| eval: FALSE
+# Let's see what files are in the FlowSOM directory
+FlowSOMFiles <- list.files("C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata", full.names=TRUE, recursive=FALSE)
+FlowSOMFiles
+```
+[1] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata/68983.fcs"       
+[2] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata/gating.wsp"      
+[3] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata/gatingResult.csv"
+[4] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata/manualGating.xml"
+
+
+```{r}
+#| eval: FALSE
+# Now, I name the path "FlowSOMFiles"
+FlowSOMFiles <- file.path ("C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata")
+FlowSOMFiles
+```
+```{r}
+#| eval: FALSE
+# Finally, I just want to see the fcs file
+list.files(path=FlowSOMFiles, pattern=".fcs", full.names=TRUE, recursive=TRUE)
+```
+[1] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/FlowSOM/extdata/68983.fcs"
+
+
+```{r}
+#| eval: FALSE
+# I repeat the same process for flowWorkspace
+flowWorkspaceFilesList <- list.files("C:/Users/Macarena/AppData/Local/R/win-library/4.5/flowWorkspace/extdata", full.names=TRUE, recursive=TRUE)
+flowWorkspaceFilesList
+```
+[1] "C:/Users/Macarena/AppData/Local/R/win-library/4.5/flowWorkspace/extdata/empty_workspace_9.2.xml"
+
+In this case, it seems that there is no fcs file in the flowWorkspace directory, but I am going to look specifically for fcs files
+
+```{r}
+#| eval: FALSE
+flowWorkspaceFilesFCS <- file.path("C:/Users/Macarena/AppData/Local/R/win-library/4.5/flowWorkspace/extdata")
+flowWorkspaceFilesFCS
+```
+
+```{r}
+list.files(path=flowWorkspaceFilesFCS, pattern=".fcs", full.names=TRUE, recursive=TRUE)
+```
+character(0)
+So, indeed, there is no fcs files in this directory
