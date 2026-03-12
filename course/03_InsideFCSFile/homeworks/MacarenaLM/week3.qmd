@@ -9,14 +9,14 @@ We are going to work with some fcs files located in the week3. First, we have to
 ```{r}
 #| eval: FALSE
 PathToDataFolder <- file.path("C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data")
-> PathToDataFolder
+PathToDataFolder
 ```
 [1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data"
 
 ```{r}
 #| eval: FALSE
 fcs_files <- list.files(PathToDataFolder, full.names=TRUE, pattern=".fcs")
-> fcs_files
+fcs_files
 ```
 [1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/CellCounts4L_AB_05_ND050_05.fcs"
 
@@ -266,10 +266,9 @@ Let’s try to retrieve the data contained within this slot and save it as it’
 ```{r}
 #| eval: FALSE
 ParameterData <- flowFrame@parameters@data
-
 head(ParameterData, 10)
 ```
-head(ParameterData, 10)
+
       name desc   range   minRange maxRange
 $P1   Time <NA>  272140    0.00000   272139
 $P2  UV1-A <NA> 4194304 -111.00000  4194303
@@ -416,4 +415,151 @@ If we run the class() function, we can see that DescriptionList is an actual “
 class(DescriptionList)
 ```
 [1] "list"
+This is in contrast to the vectors we have previously generated. While these are also list like, they are what are known as an atomic list, which contain values that are all either characters, numerics or logicals. For example:
 
+```{r}
+#| eval: FALSE
+Fluorophores <- c("BV421", "FITC", "PE", "APC")
+class(Fluorophores)
+```
+[1] "character"
+
+```{r}
+#| eval: FALSE
+PanelAntibodyCounts <- c(5, 12, 19, 26, 34, 46, 51)
+class(PanelAntibodyCounts)
+```
+[1] "numeric"
+
+```{r}
+#| eval: FALSE
+SpecimenIndexToKeep <- c(TRUE, TRUE, FALSE, TRUE)
+class(SpecimenIndexToKeep)
+```
+[1] "logical"
+
+A list on the other hand is not restricted to contain objects composed entirely of a certain atomic type. For example, I could include the three previous vectors into a list using the list() function.
+
+```{r}
+#| eval: FALSE
+MyListofVectors <- list(Fluorophores, PanelAntibodyCounts, SpecimenIndexToKeep)
+str(MyListofVectors)
+```
+
+List of 3
+ $ : chr [1:4] "BV421" "FITC" "PE" "APC"
+ $ : num [1:7] 5 12 19 26 34 46 51
+ $ : logi [1:4] TRUE TRUE FALSE TRUE
+
+We can see that with the Description/Keyword list we retrieved from our flowFrame shares a somewhat similar format.
+
+```{r}
+#| eval: FALSE
+str(DescriptionList[1:10])
+```
+List of 10
+ $ $BEGINANALYSIS  : chr "0"
+ $ $BEGINDATA      : chr "33312"
+ $ $BEGINSTEXT     : chr "0"
+ $ $BTIM           : chr "13:55:29.85"
+ $ $BYTEORD        : chr "4,3,2,1"
+ $ $CYT            : chr "Aurora"
+ $ $CYTOLIB_VERSION: chr "2.22.0"
+ $ $CYTSN          : chr "V0333"
+ $ $DATATYPE       : chr "F"
+ $ $DATE           : chr "04-Aug-2025"
+
+ But in this case, there are also names present ($BEGINANALYSIS, $BEGINDATA, etc). What if we had tried to provide names to our List of Vectors? Would the format match?
+ When we assigned a name to each of the vectors (by providing an equal to = ), we get the same kind of structure format to what we see in Description.
+ 
+ ```{r}
+ #| eval: FALSE
+MyNamedListofVectors <- list(FluorophoresNamed=Fluorophores, PanelAntibodyCountsNamed=PanelAntibodyCounts, SpecimenIndexToKeepNamed=SpecimenIndexToKeep)
+
+str(MyNamedListofVectors)
+ ```
+ List of 3
+ $ FluorophoresNamed       : chr [1:4] "BV421" "FITC" "PE" "APC"
+ $ PanelAntibodyCountsNamed: num [1:7] 5 12 19 26 34 46 51
+ $ SpecimenIndexToKeepNamed: logi [1:4] TRUE TRUE FALSE TRUE
+
+ We could then subsequently be able to isolate items from that list using the $ operator (we get several options when we write the $ symbol). Here an example
+ 
+ ```{r}
+ #| eval: FALSE
+ MyNamedListofVectors$FluorophoresNamed
+ ```
+ Alternatively, we could also access by list index position
+
+ ```{r}
+ #| eval: FALSE
+ MyNamedListofVectors[1]
+ ```
+ $FluorophoresNamed
+[1] "BV421" "FITC"  "PE"    "APC" 
+Remembering back to the original output from read.FCS() we remember that it mentioned 599 keywords being in the description slot, so now we know that this is what was being referenced.
+Let’s take a birds eye view of the contents of this list (we are not going to look for every single keyword)
+
+```{r}
+#| eval: FALSE
+Subset <- DescriptionList[1:18]
+Subset
+```
+## *Early Metadata*
+
+Within the initial portion, we are getting back metadata keywords related to where and how the particular file was acquired. Keywords of potential interest include:
+Start time: What time was the .fcs file acquired
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$BTIM`
+```
+[1] "13:55:29.85"
+
+Cytometer: What type of cytometer was the .fcs file acquired on
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$CYT`
+```
+[1] "Aurora"
+
+Cytometer serial Number: Manufacturer Serial Number of the Cytometer
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$CYTSN`
+```
+[1] "V0333"
+
+FCS File Acquisition Date: What was the date of acquisition
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$DATE`
+```
+[1] "04-Aug-2025"
+
+Acquisition End Time: What time was acquisition stopped
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$ETIM`
+```
+[1] "13:55:57.02"
+
+File Name: Name of the .fcs file
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$FIL`
+```
+[1] "CellCounts4L_AB_05-ND050-05.fcs"
+
+Operator: Who acquired the .fcs file
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$OP`
+```
+[1] "David Rach"
