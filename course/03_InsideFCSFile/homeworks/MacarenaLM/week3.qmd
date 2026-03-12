@@ -82,6 +82,8 @@ attr(,"package")
 [1] "flowCore"
 This is a new type of file named as "S4 object". At the right panel, there is a drop-down in the flowFrame file with 3 slots. The first one, "exprs", has a grid symbol. If we click it, we can see a table with the individual detectors and the data of each cell (until 100). To study this matrix in more detail, we are going to assign a value. Because this is a S4 object, we have to indicate the value specifically to this slot.
 
+# *exprs* slot
+
 ```{r}
 #| eval: FALSE
 MFI_Matrix <- flowFrame@exprs
@@ -216,4 +218,202 @@ MFI_Matrix[,1]
  
 Error in `MFI_Matrix[, 350]`:
 ! subscript out of bounds
-it gives us an error message.
+
+It gives us an error message.
+
+So, we know how represent the columns [] with a comma inside before a specific number. For rows, it is also used [] but the order is altered: first, we put a specific number and then, a comma.
+
+```{r}
+#| eval: FALSE
+MFI_Matrix[1,]
+```
+
+        Time         UV1-A         UV2-A         UV3-A         UV4-A         UV5-A         UV6-A         UV7-A         UV8-A         UV9-A 
+  38823.00000      37.79983    -184.48000     353.87714    1106.22998    1145.18140    2130.21899    4376.34277    3246.79517   32050.65039 
+       UV10-A        UV11-A        UV12-A        UV13-A        UV14-A        UV15-A        UV16-A         SSC-H         SSC-A          V1-A 
+   8123.26367    1992.57849    1070.33228     956.43573     290.86853     385.49921     670.97687  657613.00000  750760.12500    1171.13904 
+         V2-A          V3-A          V4-A          V5-A          V6-A          V7-A          V8-A          V9-A         V10-A         V11-A 
+    154.56281    1346.44885    1706.92603    1923.50940     898.25269    3162.55371   83596.50781   32506.76172   27161.51367    6236.07275 
+        V12-A         V13-A         V14-A         V15-A         V16-A         FSC-H         FSC-A       SSC-B-H       SSC-B-A          B1-A 
+   2220.30322    2023.39966     753.58936     510.95404     228.34962 1055905.00000 1217097.50000  716733.00000  815959.06250     606.66833 
+         B2-A          B3-A          B4-A          B5-A          B6-A          B7-A          B8-A          B9-A         B10-A         B11-A 
+    416.98294    4172.47119  192400.09375   93929.93750   54236.33203   19342.64453   10507.24219    9498.12695    4465.50928    1668.04810 
+        B12-A         B13-A         B14-A          R1-A          R2-A          R3-A          R4-A          R5-A          R6-A          R7-A 
+   2199.94751    1581.73450    1487.56860     147.13348     129.86763      35.90353     267.23999      49.79849    -732.70966      42.83144 
+         R8-A 
+    248.56728 
+
+    We can also ask for a specific value of the table, by putting the index number of the row and the column. For example, if we wanted the MFI value for the UV1-A detector for the first acquired cell (knowing that UV1-A is the 2nd column):
+
+```{r}
+#| eval: FALSE
+MFI_Matrix[1,2]
+```
+UV1-A 
+37.79983 
+
+# *parameters* slot
+
+This seems to be a more complex slot, with 4 sub-slots in it
+
+## *varMetadata*
+It is a table with a column of metadata names, as we can see when we click in the grid. These look reminiscent of what we saw at the top of the read.FCS() column outputs previously (see above)
+
+## *data*
+If we click on the grid, we will see the actual content that was displayed.
+Let’s try to retrieve the data contained within this slot and save it as it’s own variable/object within our R session. First, we need to open flowFrame object, then use @ to get inside its parameters slot. Since parameters is also a complex object (AnnotatedDataFrame specifically), we will need to use another @ to get inside its data slot:
+
+```{r}
+#| eval: FALSE
+ParameterData <- flowFrame@parameters@data
+
+head(ParameterData, 10)
+```
+head(ParameterData, 10)
+      name desc   range   minRange maxRange
+$P1   Time <NA>  272140    0.00000   272139
+$P2  UV1-A <NA> 4194304 -111.00000  4194303
+$P3  UV2-A <NA> 4194304 -111.00000  4194303
+$P4  UV3-A <NA> 4194304 -111.00000  4194303
+$P5  UV4-A <NA> 4194304 -111.00000  4194303
+$P6  UV5-A <NA> 4194304 -111.00000  4194303
+$P7  UV6-A <NA> 4194304 -111.00000  4194303
+$P8  UV7-A <NA> 4194304  -26.34649  4194303
+$P9  UV8-A <NA> 4194304 -111.00000  4194303
+$P10 UV9-A <NA> 4194304    0.00000  4194303
+
+We can do the same using the Bioconductor helper function
+
+```{r}
+#| eval: FALSE
+ParameterData_Alternate <- parameters(flowFrame)@data
+head(ParameterData_Alternate, 10)
+```
+      name desc   range   minRange maxRange
+$P1   Time <NA>  272140    0.00000   272139
+$P2  UV1-A <NA> 4194304 -111.00000  4194303
+$P3  UV2-A <NA> 4194304 -111.00000  4194303
+$P4  UV3-A <NA> 4194304 -111.00000  4194303
+$P5  UV4-A <NA> 4194304 -111.00000  4194303
+$P6  UV5-A <NA> 4194304 -111.00000  4194303
+$P7  UV6-A <NA> 4194304 -111.00000  4194303
+$P8  UV7-A <NA> 4194304  -26.34649  4194303
+$P9  UV8-A <NA> 4194304 -111.00000  4194303
+$P10 UV9-A <NA> 4194304    0.00000  4194303
+
+Now, we are going to run the str function
+
+```{r}
+#| eval: FALSE
+str(ParameterData)
+```
+'data.frame':	61 obs. of  5 variables:
+ $ name    : 'AsIs' Named chr  "Time" "UV1-A" "UV2-A" "UV3-A" ...
+  ..- attr(*, "names")= chr [1:61] "$P1N" "$P2N" "$P3N" "$P4N" ...
+ $ desc    : 'AsIs' Named chr  NA NA NA NA ...
+  ..- attr(*, "names")= chr [1:61] NA NA NA NA ...
+ $ range   : num  272140 4194304 4194304 4194304 4194304 ...
+ $ minRange: num  0 -111 -111 -111 -111 ...
+ $ maxRange: num  272139 4194303 4194303 4194303 4194303 ...
+
+ We can see this class of object is a “data.frame”. This is one of the more common object types in R. Each of the columns appears to be designated by a $ followed by the column name, and then type of column (numeric, character, etc).
+
+ If we are trying to see these columns in R, we notice that data.frame is not like the previous S4 class objets we interacted with, as the @ symbol after doesn’t bring up any suggestions
+
+ ```{r}
+ #| eval: FALSE
+ ParameterData@
+ ```
+ 
+Error:
+! Can't parse incomplete input
+
+By contrast, adding the $ we see that R suggests us different column names (name, range, minRange, etc). Similar to what we saw with a matrix, we can subset a data.frame based on the column or row index using square brackets [].
+
+```{r}
+#| eval: FALSE
+ParameterData[,1]
+```
+   $P1N      $P2N      $P3N      $P4N      $P5N      $P6N      $P7N      $P8N      $P9N     $P10N     $P11N     $P12N     $P13N 
+   "Time"   "UV1-A"   "UV2-A"   "UV3-A"   "UV4-A"   "UV5-A"   "UV6-A"   "UV7-A"   "UV8-A"   "UV9-A"  "UV10-A"  "UV11-A"  "UV12-A" 
+    $P14N     $P15N     $P16N     $P17N     $P18N     $P19N     $P20N     $P21N     $P22N     $P23N     $P24N     $P25N     $P26N 
+ "UV13-A"  "UV14-A"  "UV15-A"  "UV16-A"   "SSC-H"   "SSC-A"    "V1-A"    "V2-A"    "V3-A"    "V4-A"    "V5-A"    "V6-A"    "V7-A" 
+    $P27N     $P28N     $P29N     $P30N     $P31N     $P32N     $P33N     $P34N     $P35N     $P36N     $P37N     $P38N     $P39N 
+   "V8-A"    "V9-A"   "V10-A"   "V11-A"   "V12-A"   "V13-A"   "V14-A"   "V15-A"   "V16-A"   "FSC-H"   "FSC-A" "SSC-B-H" "SSC-B-A" 
+    $P40N     $P41N     $P42N     $P43N     $P44N     $P45N     $P46N     $P47N     $P48N     $P49N     $P50N     $P51N     $P52N 
+   "B1-A"    "B2-A"    "B3-A"    "B4-A"    "B5-A"    "B6-A"    "B7-A"    "B8-A"    "B9-A"   "B10-A"   "B11-A"   "B12-A"   "B13-A" 
+    $P53N     $P54N     $P55N     $P56N     $P57N     $P58N     $P59N     $P60N     $P61N 
+  "B14-A"    "R1-A"    "R2-A"    "R3-A"    "R4-A"    "R5-A"    "R6-A"    "R7-A"    "R8-A" 
+
+  The individual detectors or fluorophore appear under “name”. For now, based on what we know, the $P# appears to be some sort of name being used as an internal consistent reference to the respective.
+
+  ## *dimLabels*
+  Let's see the parameters for dimLabels
+  
+  ```{r}
+  #| eval: FALSE
+  flowFrame@parameters@dimLabels
+  ```
+[1] "rowNames"    "columnNames"
+
+## *classVersion*
+We are going to continue with the last slot
+
+```{r}
+#| eval: FALSE
+flowFrame@parameters@.__classVersion__
+```
+AnnotatedDataFrame 
+           "1.1.0" 
+# *Description*
+When we drop-down this slot, we see a very long list is opened. To make easier the managment of the list, it could be better to retrieve some of the data via the console. To retrieve the list itself, we would need to access the description slot of the flowFrame object. Since it is a slot, we will need to use the @ accessor.
+
+```{r}
+#| eval: FALSE
+DescriptionList <- flowFrame@description
+DescriptionList
+```       
+The returned list is a little too large to reasonably explore. We can attempt to subset using the head() function as shown below:
+
+```{r}
+#| eval: FALSE
+head(DescriptionList, 5)
+```
+$`$BEGINANALYSIS`
+[1] "0"
+
+$`$BEGINDATA`
+[1] "33312"
+
+$`$BEGINSTEXT`
+[1] "0"
+
+$`$BTIM`
+[1] "13:55:29.85"
+
+$`$BYTEORD`
+[1] "4,3,2,1"
+Now, we just see these 5 elements.
+
+We can also use this other code:
+
+```{r}
+#| eval: FALSE
+DescriptionList[1:10]
+```
+
+And a Bioconductor helper keyword function:
+
+```{r}
+#| eval: FALSE
+DescriptionList_Alternate <- keyword(flowFrame)
+DescriptionList_Alternate
+```
+If we run the class() function, we can see that DescriptionList is an actual “list”.
+
+```{r}
+#| eval: FALSE
+class(DescriptionList)
+```
+[1] "list"
+
