@@ -563,3 +563,173 @@ Operator: Who acquired the .fcs file
 DescriptionList$`$OP`
 ```
 [1] "David Rach"
+
+## *Detector values*
+Other important group of keywords are related with the individual detectors for at the time of acquisition.
+
+```{r}
+Detectors <- DescriptionList[20:384]
+Detectors
+```
+We get back a huge list of data. Here, you can see the meaning of the last letter of those keywords:
+For example: $P7B. "B" means number of bits reserved for parameter number n.
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7B`
+```
+[1] "32"
+For $P7E. E means amplification type for parameter n.
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7E`
+``` 
+[1] "0,0"
+
+For $P7N. N is the short name for parameter n
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7N`
+```
+[1] "UV6-A"
+
+For $P7R. R is the range for parameter number n
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7R`
+```
+[1] "4194304"
+
+For $P7TYPE. TYPE is the detector type for parameter n
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7TYPE`
+```
+[1] "Raw_Fluorescence"
+
+For $P7V. V is the detector voltage for parameter n.
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$P7V`
+```
+[1] "506"
+## *Middle Metadata*
+Once we are out of the detector keywords, we find the last of the $Metadata associated keywords.
+
+```{r}
+#| eval: FALSE
+Detectors <- DescriptionList[385:398]
+Detectors
+```
+$`$PAR`
+[1] "61"
+
+$`$PROJ`
+[1] "CellCounts4L_AB_05"
+
+$`$SPILLOVER`
+      UV1-A UV2-A UV3-A UV4-A UV5-A UV6-A UV7-A UV8-A UV9-A UV10-A UV11-A UV12-A UV13-A UV14-A UV15-A UV16-A V1-A V2-A V3-A V4-A V5-A
+ [1,] 1e+00     0     0     0     0     0     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [2,] 1e-06     1     0     0     0     0     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [3,] 0e+00     0     1     0     0     0     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [4,] 0e+00     0     0     1     0     0     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [5,] 0e+00     0     0     0     1     0     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [6,] 0e+00     0     0     0     0     1     0     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [7,] 0e+00     0     0     0     0     0     1     0     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [8,] 0e+00     0     0     0     0     0     0     1     0      0      0      0      0      0      0      0    0    0    0    0    0
+ [9,] 0e+00     0     0     0     0     0     0     0     1      0      0      0      0      0      0      0    0    0    0    0    0
+[10,] 0e+00     0     0     0     0     0     0     0     0      1      0      0      0      0      0      0    0    0    0    0    0
+[11,] 0e+00     0     0     0     0     0     0     0     0      0      1      0      0      0      0      0    0    0    0    0    0
+[12,] 0e+00     0     0     0     0     0     0     0     0      0      0      1      0      0      0      0    0    0    0    0    0
+[13,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      1      0      0      0    0    0    0    0    0
+[14,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      0      1      0      0    0    0    0    0    0
+[15,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      0      0      1      0    0    0    0    0    0
+[16,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      0      0      0      1    0    0    0    0    0
+[17,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      0      0      0      0    1    0    0    0    0
+[18,] 0e+00     0     0     0     0     0     0     0     0      0      0      0      0      0      0      0    0    1    0    0    0
+      V6-A V7-A V8-A V9-A V10-A V11-A V12-A V13-A V14-A V15-A V16-A B1-A B2-A B3-A B4-A B5-A B6-A B7-A B8-A B9-A B10-A B11-A B12-A B13-A
+ [1,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [2,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [3,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [4,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [5,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [6,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [7,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [8,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+ [9,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[10,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[11,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[12,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[13,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[14,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[15,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[16,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[17,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+[18,]    0    0    0    0     0     0     0     0     0     0     0    0    0    0    0    0    0    0    0    0     0     0     0     0
+      B14-A R1-A R2-A R3-A R4-A R5-A R6-A R7-A R8-A
+ [1,]     0    0    0    0    0    0    0    0    0
+ [2,]     0    0    0    0    0    0    0    0    0
+ [3,]     0    0    0    0    0    0    0    0    0
+ [4,]     0    0    0    0    0    0    0    0    0
+ [5,]     0    0    0    0    0    0    0    0    0
+ [6,]     0    0    0    0    0    0    0    0    0
+ [7,]     0    0    0    0    0    0    0    0    0
+ [8,]     0    0    0    0    0    0    0    0    0
+ [9,]     0    0    0    0    0    0    0    0    0
+[10,]     0    0    0    0    0    0    0    0    0
+[11,]     0    0    0    0    0    0    0    0    0
+[12,]     0    0    0    0    0    0    0    0    0
+[13,]     0    0    0    0    0    0    0    0    0
+[14,]     0    0    0    0    0    0    0    0    0
+[15,]     0    0    0    0    0    0    0    0    0
+[16,]     0    0    0    0    0    0    0    0    0
+[17,]     0    0    0    0    0    0    0    0    0
+[18,]     0    0    0    0    0    0    0    0    0
+ [ reached 'max' / getOption("max.print") -- omitted 36 rows ]
+
+$`$TIMESTEP`
+[1] "0.0001"
+
+$`$TOT`
+[1] "100"
+
+$`$VOL`
+[1] "30.31"
+
+$`APPLY COMPENSATION`
+[1] "FALSE"
+
+$CHARSET
+[1] "utf-8"
+
+$CREATOR
+[1] "SpectroFlo 3.3.0"
+
+$FCSversion
+[1] "3"
+
+$FILENAME
+[1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/CellCounts4L_AB_05_ND050_05.fcs"
+
+$`FSC ASF`
+[1] "1.21"
+
+$GROUPNAME
+[1] "ND050"
+
+$GUID
+[1] "CellCounts4L_AB_05-ND050-05.fcs"
+
+
+Proj: Often corresponding to the experiment file name
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$PROJ`
+```
+[1] "CellCounts4L_AB_05"
