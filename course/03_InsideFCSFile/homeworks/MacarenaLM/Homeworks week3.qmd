@@ -1,0 +1,54 @@
+---
+title: "Homeworks week 3"
+author: "Macarena López-Mayorga"
+date: 2026-03-16
+format: html
+---
+# Problem 1
+First, I am going to call the file path
+```{r}
+#| eval: FALSE
+UnmixedFile <- file.path("C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/AdditionalFCSFiles/2025_07_26_AB_02_NY068_02_Ctrl.fcs")
+UnmixedFile
+```
+
+Next, I need to activate flowCore
+
+```{r}
+#| eval: FALSE
+library(flowCore)
+```
+
+Now, let's see the filename argument
+```{r}
+#| eval= FALSE
+read.FCS(filename=UnmixedFile)
+```
+flowFrame object '2025_07_26_AB_02_NY068_02_Ctrl.fcs'
+with 100 cells and 43 observables:
+               name      desc     range  minRange    maxRange
+$P1            Time        NA    516839         0     506.501
+$P2           SSC-W        NA   4194304         0 4194303.000
+$P3           SSC-H        NA   4194304         0 4194303.000
+$P4           SSC-A        NA   4194304         0 4194303.000
+$P5           FSC-W        NA   4194304         0 4194303.000
+...             ...       ...       ...       ...         ...
+$P39     APC-R700-A    CD107a   4194304      -111     4192506
+$P40   Zombie NIR-A Viability   4194304      -111     4192506
+$P41 APC-Fire 750-A      CD27   4194304      -111     4192506
+$P42 APC-Fire 810-A      CCR7   4194304      -111     4192506
+$P43           AF-A        NA   4194304      -111     4194303
+472 keywords are stored in the 'description' slot
+
+This is the argument to see the different slots
+```{r}
+#| eval= FALSE
+flowFrame <- read.FCS(filename=UnmixedFile, transformation=FALSE, truncate_max_range=FALSE)
+```
+
+Let's see the exprs slot
+
+```{r}
+#| eval: FALSE
+MFI_Matrix <- flowFrame@exprs
+```
