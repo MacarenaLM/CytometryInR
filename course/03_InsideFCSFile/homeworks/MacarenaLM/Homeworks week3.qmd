@@ -156,6 +156,7 @@ MFI_Matrix[,1]
    SSC-W 
 809905.2
 
+Now, let's check the parameters
 ```{r}
 #| eval: FALSE
 ParameterData <- flowFrame@parameters@data
@@ -186,12 +187,14 @@ str(ParameterData)
  $ minRange: num  0 0 0 0 0 0 0 0 0 0 ...
  $ maxRange: num  507 4194303 4194303 4194303 4194303 ...
  
+ And the parameters for dimLabels
  ```{r}
  #| eval: FALSE
  flowFrame@parameters@dimLabels
  ```
  [1] "rowNames"    "columnNames"
  
+ Finally, the last slot:
  ```{r}
 #| eval: FALSE
 flowFrame@parameters@.__classVersion__
@@ -199,13 +202,14 @@ flowFrame@parameters@.__classVersion__
  AnnotatedDataFrame 
            "1.1.0" 
 
+Here, we see a subset of data named Description. To access, we will do it through flowFrame
 ```{r}
 #| eval: FALSE
 DescriptionList <- flowFrame@description
 DescriptionList
 ```
 
-
+To make the list shorter:
 ```{r}
 #| eval: FALSE
 head(DescriptionList, 5)
@@ -246,6 +250,10 @@ List of 10
  $ $CYTSN          : chr "U1368"
  $ $DATATYPE       : chr "F"
  $ $DATE           : chr "26-Jul-2025"
+
+ Now, let's see the different keywords:
+
+ ## Early Metadata
  
  ```{r}
  #| eval: FALSE
@@ -266,3 +274,848 @@ List of 10
  DescriptionList$`$OP`
  ```
  [1] "David Rach"
+
+ ### Detector values
+
+ ```{r}
+ #| eval: FALSE
+ Detectors <- DescriptionList[20:384]
+ Detectors
+ ```
+
+ (very long list here)
+
+
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$P7B`
+ ```
+ [1] "32"
+
+ 
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$P7E`
+ ```
+ [1] "0,0"
+
+
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$P7N`
+ ```
+ [1] "FSC-A"
+
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$P7R`
+ ```
+[1] "4194304"
+
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$P37TYPE`
+ ```
+[1] "Unmixed_Fluorescence"
+
+## Middle Metadata
+
+ ```{r}
+ #| eval: FALSE
+ Detectors <- DescriptionList[309:398]
+ Detectors
+ ```
+$`$PAR`
+[1] "43"
+
+$`$PROJ`
+[1] "2025_07_26_AB_02"
+
+$`$SPILLOVER`
+      BUV395-A BUV563-A BUV615-A BUV661-A BUV737-A BUV805-A Pacific Blue-A BV480-A BV570-A BV605-A BV650-A BV711-A BV750-A BV786-A
+ [1,]    1e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+ [2,]    1e-06        1        0        0        0        0              0       0       0       0       0       0       0       0
+ [3,]    0e+00        0        1        0        0        0              0       0       0       0       0       0       0       0
+ [4,]    0e+00        0        0        1        0        0              0       0       0       0       0       0       0       0
+ [5,]    0e+00        0        0        0        1        0              0       0       0       0       0       0       0       0
+ [6,]    0e+00        0        0        0        0        1              0       0       0       0       0       0       0       0
+ [7,]    0e+00        0        0        0        0        0              1       0       0       0       0       0       0       0
+ [8,]    0e+00        0        0        0        0        0              0       1       0       0       0       0       0       0
+ [9,]    0e+00        0        0        0        0        0              0       0       1       0       0       0       0       0
+[10,]    0e+00        0        0        0        0        0              0       0       0       1       0       0       0       0
+[11,]    0e+00        0        0        0        0        0              0       0       0       0       1       0       0       0
+[12,]    0e+00        0        0        0        0        0              0       0       0       0       0       1       0       0
+[13,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       1       0
+[14,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       1
+[15,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[16,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[17,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[18,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[19,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[20,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[21,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[22,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[23,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[24,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[25,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[26,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[27,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[28,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[29,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[30,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+      Alexa Fluor 488-A Spark Blue 550-A Spark Blue 574-A RB613-A RB705-A RB780-A PE-A PE-Dazzle594-A PE-Cy5-A PE-Fire 700-A
+ [1,]                 0                0                0       0       0       0    0              0        0             0
+ [2,]                 0                0                0       0       0       0    0              0        0             0
+ [3,]                 0                0                0       0       0       0    0              0        0             0
+ [4,]                 0                0                0       0       0       0    0              0        0             0
+ [5,]                 0                0                0       0       0       0    0              0        0             0
+ [6,]                 0                0                0       0       0       0    0              0        0             0
+ [7,]                 0                0                0       0       0       0    0              0        0             0
+ [8,]                 0                0                0       0       0       0    0              0        0             0
+ [9,]                 0                0                0       0       0       0    0              0        0             0
+[10,]                 0                0                0       0       0       0    0              0        0             0
+[11,]                 0                0                0       0       0       0    0              0        0             0
+[12,]                 0                0                0       0       0       0    0              0        0             0
+[13,]                 0                0                0       0       0       0    0              0        0             0
+[14,]                 0                0                0       0       0       0    0              0        0             0
+[15,]                 1                0                0       0       0       0    0              0        0             0
+[16,]                 0                1                0       0       0       0    0              0        0             0
+[17,]                 0                0                1       0       0       0    0              0        0             0
+[18,]                 0                0                0       1       0       0    0              0        0             0
+[19,]                 0                0                0       0       1       0    0              0        0             0
+[20,]                 0                0                0       0       0       1    0              0        0             0
+[21,]                 0                0                0       0       0       0    1              0        0             0
+[22,]                 0                0                0       0       0       0    0              1        0             0
+[23,]                 0                0                0       0       0       0    0              0        1             0
+[24,]                 0                0                0       0       0       0    0              0        0             1
+[25,]                 0                0                0       0       0       0    0              0        0             0
+[26,]                 0                0                0       0       0       0    0              0        0             0
+[27,]                 0                0                0       0       0       0    0              0        0             0
+[28,]                 0                0                0       0       0       0    0              0        0             0
+[29,]                 0                0                0       0       0       0    0              0        0             0
+[30,]                 0                0                0       0       0       0    0              0        0             0
+      PE-Fire 744-A PE-Vio770-A APC-A Alexa Fluor 647-A APC-R700-A Zombie NIR-A APC-Fire 750-A APC-Fire 810-A AF-A
+ [1,]             0           0     0                 0          0            0              0              0    0
+ [2,]             0           0     0                 0          0            0              0              0    0
+ [3,]             0           0     0                 0          0            0              0              0    0
+ [4,]             0           0     0                 0          0            0              0              0    0
+ [5,]             0           0     0                 0          0            0              0              0    0
+ [6,]             0           0     0                 0          0            0              0              0    0
+ [7,]             0           0     0                 0          0            0              0              0    0
+ [8,]             0           0     0                 0          0            0              0              0    0
+ [9,]             0           0     0                 0          0            0              0              0    0
+[10,]             0           0     0                 0          0            0              0              0    0
+[11,]             0           0     0                 0          0            0              0              0    0
+[12,]             0           0     0                 0          0            0              0              0    0
+[13,]             0           0     0                 0          0            0              0              0    0
+[14,]             0           0     0                 0          0            0              0              0    0
+[15,]             0           0     0                 0          0            0              0              0    0
+[16,]             0           0     0                 0          0            0              0              0    0
+[17,]             0           0     0                 0          0            0              0              0    0
+[18,]             0           0     0                 0          0            0              0              0    0
+[19,]             0           0     0                 0          0            0              0              0    0
+[20,]             0           0     0                 0          0            0              0              0    0
+[21,]             0           0     0                 0          0            0              0              0    0
+[22,]             0           0     0                 0          0            0              0              0    0
+[23,]             0           0     0                 0          0            0              0              0    0
+[24,]             0           0     0                 0          0            0              0              0    0
+[25,]             1           0     0                 0          0            0              0              0    0
+[26,]             0           1     0                 0          0            0              0              0    0
+[27,]             0           0     1                 0          0            0              0              0    0
+[28,]             0           0     0                 1          0            0              0              0    0
+[29,]             0           0     0                 0          1            0              0              0    0
+[30,]             0           0     0                 0          0            1              0              0    0
+ [ reached 'max' / getOption("max.print") -- omitted 3 rows ]
+
+$`$TIMESTEP`
+[1] "0.0001"
+
+$`$TOT`
+[1] "100"
+
+$`$VOL`
+[1] "60.66"
+
+$`APPLY COMPENSATION`
+[1] "FALSE"
+$CHARSET
+[1] "utf-8"
+
+$CREATOR
+[1] "SpectroFlo 3.3.0"
+
+$FCSversion
+[1] "3"
+
+$FILENAME
+[1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/AdditionalFCSFiles/2025_07_26_AB_02_NY068_02_Ctrl.fcs"
+
+$`flowCore_$P10Rmax`
+[1] "4194303"
+
+$`flowCore_$P10Rmin`
+[1] "0"
+
+$`flowCore_$P11Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P11Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P12Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P12Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P13Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P13Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P14Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P14Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P15Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P15Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P16Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P16Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P17Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P17Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P18Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P18Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P19Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P19Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P1Rmax`
+[1] "506.501251220703"
+
+$`flowCore_$P1Rmin`
+[1] "0"
+
+$`flowCore_$P20Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P20Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P21Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P21Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P22Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P22Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P23Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P23Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P24Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P24Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P25Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P25Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P26Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P26Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P27Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P27Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P28Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P28Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P29Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P29Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P2Rmax`
+[1] "4194303"
+
+$`flowCore_$P2Rmin`
+[1] "0"
+
+$`flowCore_$P30Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P30Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P31Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P31Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P32Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P32Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P33Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P33Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P34Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P34Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P35Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P35Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P36Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P36Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P37Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P37Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P38Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P38Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P39Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P39Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P3Rmax`
+[1] "4194303"
+
+$`flowCore_$P3Rmin`
+[1] "0"
+
+$`flowCore_$P40Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P40Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P41Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P41Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P42Rmax`
+[1] "4192505.75"
+
+$`flowCore_$P42Rmin`
+[1] "-111.00008392334"
+
+$`flowCore_$P43Rmax`
+[1] "4194303"
+
+$`flowCore_$P43Rmin`
+[1] "-111"
+
+$`flowCore_$P4Rmax`
+[1] "4194303"
+
+$`flowCore_$P4Rmin`
+[1] "0"
+
+$`flowCore_$P5Rmax`
+[1] "4194303"
+
+$`flowCore_$P5Rmin`
+[1] "0"
+
+$`flowCore_$P6Rmax`
+[1] "4194303"
+>
+
+ ```{r}
+ #| eval: FALSE
+DescriptionList$`$PROJ`
+ ```
+[1] "2025_07_26_AB_02"
+
+
+```{r}
+#| eval: FALSE
+DescriptionList$`$SPILLOVER`
+```
+      BUV395-A BUV563-A BUV615-A BUV661-A BUV737-A BUV805-A Pacific Blue-A BV480-A BV570-A BV605-A BV650-A BV711-A BV750-A BV786-A
+ [1,]    1e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+ [2,]    1e-06        1        0        0        0        0              0       0       0       0       0       0       0       0
+ [3,]    0e+00        0        1        0        0        0              0       0       0       0       0       0       0       0
+ [4,]    0e+00        0        0        1        0        0              0       0       0       0       0       0       0       0
+ [5,]    0e+00        0        0        0        1        0              0       0       0       0       0       0       0       0
+ [6,]    0e+00        0        0        0        0        1              0       0       0       0       0       0       0       0
+ [7,]    0e+00        0        0        0        0        0              1       0       0       0       0       0       0       0
+ [8,]    0e+00        0        0        0        0        0              0       1       0       0       0       0       0       0
+ [9,]    0e+00        0        0        0        0        0              0       0       1       0       0       0       0       0
+[10,]    0e+00        0        0        0        0        0              0       0       0       1       0       0       0       0
+[11,]    0e+00        0        0        0        0        0              0       0       0       0       1       0       0       0
+[12,]    0e+00        0        0        0        0        0              0       0       0       0       0       1       0       0
+[13,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       1       0
+[14,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       1
+[15,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[16,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[17,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[18,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[19,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[20,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[21,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[22,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[23,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[24,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[25,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[26,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[27,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[28,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[29,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+[30,]    0e+00        0        0        0        0        0              0       0       0       0       0       0       0       0
+      Alexa Fluor 488-A Spark Blue 550-A Spark Blue 574-A RB613-A RB705-A RB780-A PE-A PE-Dazzle594-A PE-Cy5-A PE-Fire 700-A
+ [1,]                 0                0                0       0       0       0    0              0        0             0
+ [2,]                 0                0                0       0       0       0    0              0        0             0
+ [3,]                 0                0                0       0       0       0    0              0        0             0
+ [4,]                 0                0                0       0       0       0    0              0        0             0
+ [5,]                 0                0                0       0       0       0    0              0        0             0
+ [6,]                 0                0                0       0       0       0    0              0        0             0
+ [7,]                 0                0                0       0       0       0    0              0        0             0
+ [8,]                 0                0                0       0       0       0    0              0        0             0
+ [9,]                 0                0                0       0       0       0    0              0        0             0
+[10,]                 0                0                0       0       0       0    0              0        0             0
+[11,]                 0                0                0       0       0       0    0              0        0             0
+[12,]                 0                0                0       0       0       0    0              0        0             0
+[13,]                 0                0                0       0       0       0    0              0        0             0
+[14,]                 0                0                0       0       0       0    0              0        0             0
+[15,]                 1                0                0       0       0       0    0              0        0             0
+[16,]                 0                1                0       0       0       0    0              0        0             0
+[17,]                 0                0                1       0       0       0    0              0        0             0
+[18,]                 0                0                0       1       0       0    0              0        0             0
+[19,]                 0                0                0       0       1       0    0              0        0             0
+[20,]                 0                0                0       0       0       1    0              0        0             0
+[21,]                 0                0                0       0       0       0    1              0        0             0
+[22,]                 0                0                0       0       0       0    0              1        0             0
+[23,]                 0                0                0       0       0       0    0              0        1             0
+[24,]                 0                0                0       0       0       0    0              0        0             1
+[25,]                 0                0                0       0       0       0    0              0        0             0
+[26,]                 0                0                0       0       0       0    0              0        0             0
+[27,]                 0                0                0       0       0       0    0              0        0             0
+[28,]                 0                0                0       0       0       0    0              0        0             0
+[29,]                 0                0                0       0       0       0    0              0        0             0
+[30,]                 0                0                0       0       0       0    0              0        0             0
+      PE-Fire 744-A PE-Vio770-A APC-A Alexa Fluor 647-A APC-R700-A Zombie NIR-A APC-Fire 750-A APC-Fire 810-A AF-A
+ [1,]             0           0     0                 0          0            0              0              0    0
+ [2,]             0           0     0                 0          0            0              0              0    0
+ [3,]             0           0     0                 0          0            0              0              0    0
+ [4,]             0           0     0                 0          0            0              0              0    0
+ [5,]             0           0     0                 0          0            0              0              0    0
+ [6,]             0           0     0                 0          0            0              0              0    0
+ [7,]             0           0     0                 0          0            0              0              0    0
+ [8,]             0           0     0                 0          0            0              0              0    0
+ [9,]             0           0     0                 0          0            0              0              0    0
+[10,]             0           0     0                 0          0            0              0              0    0
+[11,]             0           0     0                 0          0            0              0              0    0
+[12,]             0           0     0                 0          0            0              0              0    0
+[13,]             0           0     0                 0          0            0              0              0    0
+[14,]             0           0     0                 0          0            0              0              0    0
+[15,]             0           0     0                 0          0            0              0              0    0
+[16,]             0           0     0                 0          0            0              0              0    0
+[17,]             0           0     0                 0          0            0              0              0    0
+[18,]             0           0     0                 0          0            0              0              0    0
+[19,]             0           0     0                 0          0            0              0              0    0
+[20,]             0           0     0                 0          0            0              0              0    0
+[21,]             0           0     0                 0          0            0              0              0    0
+[22,]             0           0     0                 0          0            0              0              0    0
+[23,]             0           0     0                 0          0            0              0              0    0
+[24,]             0           0     0                 0          0            0              0              0    0
+[25,]             1           0     0                 0          0            0              0              0    0
+[26,]             0           1     0                 0          0            0              0              0    0
+[27,]             0           0     1                 0          0            0              0              0    0
+[28,]             0           0     0                 1          0            0              0              0    0
+[29,]             0           0     0                 0          1            0              0              0    0
+[30,]             0           0     0                 0          0            1              0              0    0
+ [ reached 'max' / getOption("max.print") -- omitted 3 rows ]
+
+ 
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$TOT`
+ ```
+ [1] "100"
+
+ 
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$`$VOL`
+ ```
+ [1] "60.66"
+
+ 
+ ```{r}
+ #| eval: FALSE
+ DescriptionList$CREATOR
+ ```
+ [1] "SpectroFlo 3.3.0"
+
+ ## Laser Metadata
+ ```{r}
+ #| eval: FALSE
+ Detectors <- DescriptionList[408:423]
+ Detectors
+ ```
+$GUID
+[1] "2025_07_26_AB_02_NY068_02_Ctrl.fcs"
+
+$LASER1ASF
+[1] "1.12"
+
+$LASER1DELAY
+[1] "-39.65"
+
+$LASER1NAME
+[1] "YellowGreen"
+
+$LASER2ASF
+[1] "1.09"
+
+$LASER2DELAY
+[1] "-19.825"
+
+$LASER2NAME
+[1] "Violet"
+
+$LASER3ASF
+[1] "1.15"
+
+$LASER3DELAY
+[1] "0"
+
+$LASER3NAME
+[1] "Blue"
+
+$LASER4ASF
+[1] "1.04"
+
+$LASER4DELAY
+[1] "20.3"
+
+$LASER4NAME
+[1] "Red"
+
+$LASER5ASF
+[1] "1.09"
+
+$LASER5DELAY
+[1] "39.8"
+
+$LASER5NAME
+[1] "UV"
+> Detectors <- DescriptionList[408:423]
++ Detectors
+$GUID
+[1] "2025_07_26_AB_02_NY068_02_Ctrl.fcs"
+
+$LASER1ASF
+[1] "1.12"
+
+$LASER1DELAY
+[1] "-39.65"
+
+$LASER1NAME
+[1] "YellowGreen"
+
+$LASER2ASF
+[1] "1.09"
+
+$LASER2DELAY
+[1] "-19.825"
+
+$LASER2NAME
+[1] "Violet"
+
+$LASER3ASF
+[1] "1.15"
+
+$LASER3DELAY
+[1] "0"
+
+$LASER3NAME
+[1] "Blue"
+
+$LASER4ASF
+[1] "1.04"
+
+$LASER4DELAY
+[1] "20.3"
+
+$LASER4NAME
+[1] "Red"
+
+$LASER5ASF
+[1] "1.09"
+
+$LASER5DELAY
+[1] "39.8"
+
+$LASER5NAME
+[1] "UV"
+ 
+ ## Display
+
+ ```{r}
+ #| eval: FALSE
+ Detectors <- DescriptionList[424:467]
+ Detectors
+ ```
+$ORIGINALGUID
+[1] "2025_07_26_AB_02_NY068_02_Ctrl.fcs"
+
+$P10DISPLAY
+[1] "LIN"
+
+$P11DISPLAY
+[1] "LOG"
+
+$P12DISPLAY
+[1] "LOG"
+
+$P13DISPLAY
+[1] "LOG"
+
+$P14DISPLAY
+[1] "LOG"
+
+$P15DISPLAY
+[1] "LOG"
+
+$P16DISPLAY
+[1] "LOG"
+
+$P17DISPLAY
+[1] "LOG"
+
+$P18DISPLAY
+[1] "LOG"
+
+$P19DISPLAY
+[1] "LOG"
+
+$P1DISPLAY
+[1] "LOG"
+
+$P20DISPLAY
+[1] "LOG"
+
+$P21DISPLAY
+[1] "LOG"
+
+$P22DISPLAY
+[1] "LOG"
+
+$P23DISPLAY
+[1] "LOG"
+
+$P24DISPLAY
+[1] "LOG"
+
+$P25DISPLAY
+[1] "LOG"
+
+$P26DISPLAY
+[1] "LOG"
+
+$P27DISPLAY
+[1] "LOG"
+
+$P28DISPLAY
+[1] "LOG"
+
+$P29DISPLAY
+[1] "LOG"
+
+$P2DISPLAY
+[1] "LIN"
+
+$P30DISPLAY
+[1] "LOG"
+
+$P31DISPLAY
+[1] "LOG"
+
+$P32DISPLAY
+[1] "LOG"
+
+$P33DISPLAY
+[1] "LOG"
+
+$P34DISPLAY
+[1] "LOG"
+
+$P35DISPLAY
+[1] "LOG"
+
+$P36DISPLAY
+[1] "LOG"
+
+$P37DISPLAY
+[1] "LOG"
+
+$P38DISPLAY
+[1] "LOG"
+
+$P39DISPLAY
+[1] "LOG"
+
+$P3DISPLAY
+[1] "LIN"
+
+$P40DISPLAY
+[1] "LOG"
+
+$P41DISPLAY
+[1] "LOG"
+
+$P42DISPLAY
+[1] "LOG"
+
+$P43DISPLAY
+[1] "LOG"
+
+$P4DISPLAY
+[1] "LIN"
+
+$P5DISPLAY
+[1] "LIN"
+
+$P6DISPLAY
+[1] "LIN"
+
+$P7DISPLAY
+[1] "LIN"
+
+$P8DISPLAY
+[1] "LIN"
+
+$P9DISPLAY
+[1] "LIN"
+
+## Last keywords: threshold, window scaling, etc 
+
+```{r}
+#| eval: FALSE
+Detectors <- DescriptionList[468:472]
+Detectors
+```
+$THRESHOLD
+[1] "(FSC,600000)"
+
+$transformation
+[1] "custom"
+
+$TUBENAME
+[1] "Ctrl"
+
+$USERSETTINGNAME
+[1] "DR_2025_AB_Nuclear"
+
+$`WINDOW EXTENSION`
+[1] "3"
+
+## Answer to the problem 1
+
+The only different thing that I have observed is in the section that I called "Middle Metadata". In this section, you can see keywords with names like $`flowCore_$PXXRmax` or $`flowCore_$PXXRmin`, so this might be the difference between a raw spectral flow cytometry file and an unmixed .fcs file. 
+
+# Problem 2
+I'am going to follow the same strategy that I used in problem 1. First, name and indicate the path:
+
+```{r}
+#| eval: FALSE
+PathToDataFolder <- file.path("C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/AdditionalFCSFiles/2025-10_22_Contrad.fcs")
+PathToDataFolder
+```
+[1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/AdditionalFCSFiles/2025-10_22_Contrad.fcs"
+
+
+```{r}
+#| eval: FALSE
+library(flowCore)
+```
+
+
+```{r}
+#| eval: FALSE
+read.FCS(filename=PathToDataFolder)
+```
+flowFrame object '5855c3b6-7adc-45da-8921-191c97c559f5'
+with 1852 cells and 33 observables:
+       name   desc     range  minRange  maxRange
+$P1    Time     NA    262144       0.0    262143
+$P2   FSC-A     NA    262144       0.0    262143
+$P3   FSC-H     NA    262144       0.0    262143
+$P4   FSC-W     NA    262144       0.0    262143
+$P5   SSC-A     NA    262144     -44.8    262143
+...     ...    ...       ...       ...       ...
+$P29 Y615-H     NA    262144      0.00    262143
+$P30 Y710-A     NA    262144   -111.00    262143
+$P31 Y710-H     NA    262144      0.00    262143
+$P32 Y780-A     NA    262144    -87.33    262143
+$P33 Y780-H     NA    262144      0.00    262143
+397 keywords are stored in the 'description' slot
