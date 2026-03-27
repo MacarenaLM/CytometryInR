@@ -1,0 +1,47 @@
+---
+title: "week4_Introduction to tidyverse"
+author: "Macarena López-Mayorga"
+date: 2026-03-27
+format: html
+---
+First, we need to indicate where is located the file
+
+```{r}
+#| eval: FALSE
+FilePath <- file.path("C:/Users/Macarena/CytometryInR/course/week04/04_IntroToTidyverse/data/Dataset.csv")
+FilePath
+```
+
+```{r}
+#| eval: FALSE
+library(utils)
+```
+
+
+```{r}
+#| eval: FALSE
+Data <- read.csv(file=FilePath, check.names=FALSE)
+colnames(Data)
+```
+ [1] "bid"               "timepoint"         "Condition"         "Date"              "infant_sex"        "ptype"            
+ [7] "root"              "singletsFSC"       "singletsSSC"       "singletsSSCB"      "CD45"              "NotMonocytes"     
+[13] "nonDebris"         "lymphocytes"       "live"              "Dump+"             "Dump-"             "Tcells"           
+[19] "Vd2+"              "Vd2-"              "Va7.2+"            "Va7.2-"            "CD4+"              "CD4-"             
+[25] "CD8+"              "CD8-"              "Tcells_count"      "lymphocytes_count" "Monocytes"         "Debris"           
+[31] "CD45_count"
+
+when we put check.names into TRUE, then the "+" or "-" symbols dissapear
+
+```{r}
+#| eval: FALSE
+Data <- read.csv(file=FilePath, check.names=TRUE)
+colnames(Data)
+```
+ [1] "bid"               "timepoint"         "Condition"         "Date"              "infant_sex"        "ptype"            
+ [7] "root"              "singletsFSC"       "singletsSSC"       "singletsSSCB"      "CD45"              "NotMonocytes"     
+[13] "nonDebris"         "lymphocytes"       "live"              "Dump."             "Dump..1"           "Tcells"           
+[19] "Vd2."              "Vd2..1"            "Va7.2."            "Va7.2..1"          "CD4."              "CD4..1"           
+[25] "CD8."              "CD8..1"            "Tcells_count"      "lymphocytes_count" "Monocytes"         "Debris"           
+[31] "CD45_count"   
+
+
