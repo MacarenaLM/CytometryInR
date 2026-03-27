@@ -3413,3 +3413,254 @@ $P33BS
 
 $P33MS
 [1] "0"
+
+
+```{r}
+#| eval: FALSE
+Detectors <- DescriptionList[328:330]
+Detectors
+```
+$`CST BEADS EXPIRED`
+[1] "False"
+
+$FILENAME
+[1] "C:/Users/Macarena/CytometryInR/course/03_InsideFCSFile/data/AdditionalFCSFiles/2025-10_22_Contrad.fcs"
+
+$ORIGINALGUID
+[1] "5855c3b6-7adc-45da-8921-191c97c559f5"
+
+
+```{r}
+#| eval: FALSE
+flowCoreCheck <- read.FCS(filename=PathToDataFolder, transformation=TRUE, truncate_max_range=FALSE)
+flowCoreCheck
+```
+flowFrame object '5855c3b6-7adc-45da-8921-191c97c559f5'
+with 1852 cells and 33 observables:
+       name   desc     range  minRange  maxRange
+$P1    Time     NA    262144       0.0    262143
+$P2   FSC-A     NA    262144       0.0    262143
+$P3   FSC-H     NA    262144       0.0    262143
+$P4   FSC-W     NA    262144       0.0    262143
+$P5   SSC-A     NA    262144     -44.8    262143
+...     ...    ...       ...       ...       ...
+$P29 Y615-H     NA    262144      0.00    262143
+$P30 Y710-A     NA    262144   -111.00    262143
+$P31 Y710-H     NA    262144      0.00    262143
+$P32 Y780-A     NA    262144    -87.33    262143
+$P33 Y780-H     NA    262144      0.00    262143
+397 keywords are stored in the 'description' slot
+
+We observed 67 additional keywords that were hidden and we can observed when "transformation" is set to hidden
+
+```{r}
+#| eval: FALSE
+YesChange <- keyword(flowCoreCheck)
+Detectors <- YesChange[331:397]
+Detectors
+```
+$`flowCore_$P1Rmax`
+[1] "262144"
+
+$`flowCore_$P1Rmin`
+[1] "0"
+
+$`flowCore_$P2Rmax`
+[1] "262144"
+
+$`flowCore_$P2Rmin`
+[1] "0"
+
+$`flowCore_$P3Rmax`
+[1] "262144"
+
+$`flowCore_$P3Rmin`
+[1] "0"
+
+$`flowCore_$P4Rmax`
+[1] "262144"
+
+$`flowCore_$P4Rmin`
+[1] "0"
+
+$`flowCore_$P5Rmax`
+[1] "262144"
+
+$`flowCore_$P5Rmin`
+[1] "-44.7999992370605"
+
+$`flowCore_$P6Rmax`
+[1] "262144"
+
+$`flowCore_$P6Rmin`
+[1] "0"
+
+$`flowCore_$P7Rmax`
+[1] "262144"
+
+$`flowCore_$P7Rmin`
+[1] "0"
+
+$`flowCore_$P8Rmax`
+[1] "262144"
+
+$`flowCore_$P8Rmin`
+[1] "-111"
+
+$`flowCore_$P9Rmax`
+[1] "262144"
+
+$`flowCore_$P9Rmin`
+[1] "0"
+
+$`flowCore_$P10Rmax`
+[1] "262144"
+
+$`flowCore_$P10Rmin`
+[1] "-53.9499969482422"
+
+$`flowCore_$P11Rmax`
+[1] "262144"
+
+$`flowCore_$P11Rmin`
+[1] "0"
+
+$`flowCore_$P12Rmax`
+[1] "262144"
+
+$`flowCore_$P12Rmin`
+[1] "-77.3499984741211"
+
+$`flowCore_$P13Rmax`
+[1] "262144"
+
+$`flowCore_$P13Rmin`
+[1] "0"
+
+$`flowCore_$P14Rmax`
+[1] "262144"
+
+$`flowCore_$P14Rmin`
+[1] "-67.2000045776367"
+
+$`flowCore_$P15Rmax`
+[1] "262144"
+
+$`flowCore_$P15Rmin`
+[1] "0"
+
+$`flowCore_$P16Rmax`
+[1] "262144"
+
+$`flowCore_$P16Rmin`
+[1] "-111"
+
+$`flowCore_$P17Rmax`
+[1] "262144"
+
+$`flowCore_$P17Rmin`
+[1] "0"
+
+$`flowCore_$P18Rmax`
+[1] "262144"
+
+$`flowCore_$P18Rmin`
+[1] "-64.3499984741211"
+
+$`flowCore_$P19Rmax`
+[1] "262144"
+
+$`flowCore_$P19Rmin`
+[1] "0"
+
+$`flowCore_$P20Rmax`
+[1] "262144"
+
+$`flowCore_$P20Rmin`
+[1] "-70.8499984741211"
+
+$`flowCore_$P21Rmax`
+[1] "262144"
+
+$`flowCore_$P21Rmin`
+[1] "0"
+
+$`flowCore_$P22Rmax`
+[1] "262144"
+
+$`flowCore_$P22Rmin`
+[1] "-111"
+
+$`flowCore_$P23Rmax`
+[1] "262144"
+
+$`flowCore_$P23Rmin`
+[1] "0"
+
+$`flowCore_$P24Rmax`
+[1] "262144"
+
+$`flowCore_$P24Rmin`
+[1] "-111"
+
+$`flowCore_$P25Rmax`
+[1] "262144"
+
+$`flowCore_$P25Rmin`
+[1] "0"
+
+$`flowCore_$P26Rmax`
+[1] "262144"
+
+$`flowCore_$P26Rmin`
+[1] "-111"
+
+$`flowCore_$P27Rmax`
+[1] "262144"
+
+$`flowCore_$P27Rmin`
+[1] "0"
+
+$`flowCore_$P28Rmax`
+[1] "262144"
+
+$`flowCore_$P28Rmin`
+[1] "-111"
+
+$`flowCore_$P29Rmax`
+[1] "262144"
+
+$`flowCore_$P29Rmin`
+[1] "0"
+
+$`flowCore_$P30Rmax`
+[1] "262144"
+
+$`flowCore_$P30Rmin`
+[1] "-111"
+
+$`flowCore_$P31Rmax`
+[1] "262144"
+
+$`flowCore_$P31Rmin`
+[1] "0"
+
+$`flowCore_$P32Rmax`
+[1] "262144"
+
+$`flowCore_$P32Rmin`
+[1] "-87.3300018310547"
+
+$`flowCore_$P33Rmax`
+[1] "262144"
+
+$`flowCore_$P33Rmin`
+[1] "0"
+
+$ORIGINALGUID
+[1] "5855c3b6-7adc-45da-8921-191c97c559f5"
+>
+
+So, in this case, I didn't see an specific slot for display, this data seems to be intermingled with the laser metadata. The "CST beads expired" data appears for the first time in this file, not in the previous fcs files and the order in other keywords seems to be different.
+
+
