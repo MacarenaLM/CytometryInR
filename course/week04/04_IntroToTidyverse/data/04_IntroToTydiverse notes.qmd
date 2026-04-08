@@ -285,4 +285,40 @@ head(Subset, 3)
 2 INF0100 0.6748298 0.3357696 0.6119112         0      Ctrl
 3 INF0100 0.6119129 0.2862104 0.6639621         4      Ctrl
 
-The relocate() function is used when we want to move just one column
+The relocate() function is used when we want to move just one column. We can do this with select() function too, but it would be a waste of time. Let’s say we wanted to move the Tcells column from its current location to the second column position (right after the bid column). The line of code to do so would look like:
+
+```{r}
+#| eval: FALSE
+Data |> relocate(Tcells, .after=bid) |> head(3)
+```
+      bid    Tcells timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes
+1 INF0052 0.2804264         0      Ctrl 2025-07-26       Male HEU-hi 2098368     1894070     1666179      1537396 0.5952943    0.8820349
+2 INF0100 0.6748298         0      Ctrl 2025-07-26       Male HEU-lo 2020184     1791890     1697083      1579098 0.9106762    0.9052256
+3 INF0100 0.6119129         4      Ctrl 2025-07-26       Male HEU-lo 1155040     1033320      875465       845446 0.9705765    0.9845400
+  nonDebris lymphocytes      live      Dump+     Dump-        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1 0.8627649   0.6420138 0.9020581 0.21090996 0.6911482 0.008120361 0.9918796 0.01448070 0.9773989 0.6341164 0.3432825 0.2734826
+2 0.8602660   0.2145848 0.8908981 0.06252775 0.8283703 0.007265620 0.9927344 0.01577499 0.9769594 0.6119112 0.3650482 0.3357696
+3 0.9578793   0.7403110 0.8757665 0.20023803 0.6755285 0.004651313 0.9953487 0.01579402 0.9795547 0.6639621 0.3155925 0.2862104
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06979990       164771            587573 0.11796509 0.13723513     915203
+2 0.02927858       208241            308583 0.09477437 0.13973396    1438047
+3 0.02938209       371723            607477 0.01545999 0.04212072     820570
+
+Similar to what we saw with select(), this approach can also be used for more than 1 column:
+
+```{r}
+#| eval: FALSE
+Data |> relocate(Tcells, Monocytes, .after=bid) |> head(3)
+```
+      bid    Tcells  Monocytes timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45
+1 INF0052 0.2804264 0.11796509         0      Ctrl 2025-07-26       Male HEU-hi 2098368     1894070     1666179      1537396 0.5952943
+2 INF0100 0.6748298 0.09477437         0      Ctrl 2025-07-26       Male HEU-lo 2020184     1791890     1697083      1579098 0.9106762
+3 INF0100 0.6119129 0.01545999         4      Ctrl 2025-07-26       Male HEU-lo 1155040     1033320      875465       845446 0.9705765
+  NotMonocytes nonDebris lymphocytes      live      Dump+     Dump-        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-
+1    0.8820349 0.8627649   0.6420138 0.9020581 0.21090996 0.6911482 0.008120361 0.9918796 0.01448070 0.9773989 0.6341164 0.3432825
+2    0.9052256 0.8602660   0.2145848 0.8908981 0.06252775 0.8283703 0.007265620 0.9927344 0.01577499 0.9769594 0.6119112 0.3650482
+3    0.9845400 0.9578793   0.7403110 0.8757665 0.20023803 0.6755285 0.004651313 0.9953487 0.01579402 0.9795547 0.6639621 0.3155925
+       CD8+       CD8- Tcells_count lymphocytes_count     Debris CD45_count
+1 0.2734826 0.06979990       164771            587573 0.13723513     915203
+2 0.3357696 0.02927858       208241            308583 0.13973396    1438047
+3 0.2862104 0.02938209       371723            607477 0.04212072     820570
