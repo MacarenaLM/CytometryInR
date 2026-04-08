@@ -208,3 +208,81 @@ is.double(Data$Tcells_count)
 ```
 [1] FALSE
 
+Like with keywords, special characters (as & or spaces) will need tick marks to run the function
+
+```{r}
+#| eval: FALSE
+is.numeric(Data$`CD8-`)
+```
+[1] TRUE
+
+
+```{r}
+#| eval: FALSE
+library(dplyr)
+```
+The select() function is used to “select” a column from a data.frame type object. The simplest way to use it is giving the name of the data.frame object in first place and then, the name of the column, surrounded by " ":
+
+```{r}
+#| eval: FALSE
+DateColumn <- select(Data, "Date")
+DateColumn[1:10,]
+```
+[1] "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26"
+
+This results in the column being selected, resulting in the new object containing only that subsetted out column from the original Data object.
+
+In general, the function select() is used with the implementation of pipe operators, not like we used previously:
+
+```{r}
+#| eval: FALSE
+DateColumn <- Data |> select("Date")
+DateColumn[1:10,]
+```
+ [1] "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26"
+
+ The main advantage of the pipe operators is that we can link different functions. For example, the nrow() function determine the number of rows. We can link the function select() and nrow() with the pipe operators:
+ 
+ ```{r}
+ #| eval: FALSE
+ Data |> select("Date") |> nrow()
+ ```
+ [1] 196
+
+ CURIOUS NOTE: Despite we need "" for install.packages() function, for instance, in select() function, the function still run without the "" in date:
+
+ ```{r}
+ #| eval: FALSE
+ Data |> select(Date) |> head(3)
+ ```
+         Date
+1 2025-07-26
+2 2025-07-26
+3 2025-07-26
+
+This is due to dplyr; It's now in charge and it's able to infer that Date is a column, with no need of "".
+For select more than one column and position them anywhere within the data.frame:
+
+```{r}
+#| eval: FALSE
+Subset <- Data |> select(bid, timepoint, Condition, Tcells, `CD8+`, `CD4+`)
+head(Subset, 3)
+```
+      bid timepoint Condition    Tcells      CD8+      CD4+
+1 INF0052         0      Ctrl 0.2804264 0.2734826 0.6341164
+2 INF0100         0      Ctrl 0.6748298 0.3357696 0.6119112
+3 INF0100         4      Ctrl 0.6119129 0.2862104 0.6639621
+
+The order in which we selected the columns will dictate their position in the subsetted data.frame object:
+
+```{r}
+#| eval: FALSE
+Subset <- Data |> select(bid, Tcells, `CD8+`, `CD4+`, timepoint, Condition)
+head(Subset, 3)
+```
+      bid    Tcells      CD8+      CD4+ timepoint Condition
+1 INF0052 0.2804264 0.2734826 0.6341164         0      Ctrl
+2 INF0100 0.6748298 0.3357696 0.6119112         0      Ctrl
+3 INF0100 0.6119129 0.2862104 0.6639621         4      Ctrl
+
+The relocate() function is used when we want to move just one column
