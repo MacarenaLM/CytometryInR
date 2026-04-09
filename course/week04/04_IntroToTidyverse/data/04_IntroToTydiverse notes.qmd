@@ -322,3 +322,262 @@ Data |> relocate(Tcells, Monocytes, .after=bid) |> head(3)
 1 0.2734826 0.06979990       164771            587573 0.13723513     915203
 2 0.3357696 0.02927858       208241            308583 0.13973396    1438047
 3 0.2862104 0.02938209       371723            607477 0.04212072     820570
+
+To rename columns, we can proceed calling a subset of data and then, specifying the column (third, first, whatever). Once we confirm the column that we want to rename, next we can change it:
+
+```{r}
+#| eval: FALSE
+colnames(Subset)
+```
+[1] "bid"       "Tcells"    "CD8+"      "CD4+"      "timepoint" "Condition"
+
+Now, we specify the column in which we are interested:
+```{r}
+#| eval: FALSE
+colnames(Subset)[3]
+```
+And we change the name of that particular column:
+
+```{r}
+#| eval: FALSE
+colnames(Subset)[3] <- "CD8Positive"
+colnames(Subset)
+```
+[1] "bid"         "Tcells"      "CD8Positive" "CD4+"        "timepoint"   "Condition"  
+We can also do that in a different way:
+
+```{r}
+#|eval: FALSE
+Renamed <- Subset |> rename(CD4_Positive = `CD4+`)
+colnames(Renamed)
+```
+[1] "bid"          "Tcells"       "CD8Positive"  "CD4_Positive" "timepoint"    "Condition"   
+
+If we want to rename several columns at once. we can do it using a comma between them:
+
+```{r}
+#| eval: FALSE
+Renamed_Multiple <- Subset |> rename(specimen = bid, timepoint_months = timepoint, stimulation = Condition, CD4Positive=`CD4+`)
+colnames(Renamed_Multiple)
+```
+[1] "specimen"         "Tcells"           "CD8Positive"      "CD4Positive"      "timepoint_months" "stimulation"   
+
+To see data from a particular column, we use the function pull():
+
+```{r}
+#| eval: FALSE
+Data |> pull(Date) |> head(5)
+```
+[1] "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26" "2025-07-26"
+
+If we also want to see the unique values in a column, we can use the unique() function:
+
+```{r}
+#| eval: FALSE
+Data |> pull(Date) |> unique()
+```
+[1] "2025-07-26" "2025-07-29" "2025-07-31" "2025-08-05" "2025-08-07" "2025-08-22" "2025-08-28" "2025-08-30"
+
+The Condition column in this Dataset appears to be indicating whether the samples were stimulated. Let’s see how many unique values are contained within that column
+
+```{r}
+#| eval: FALSE
+Data |> pull(Condition) |> unique() 
+```
+[1] "Ctrl" "PPD"  "SEB" 
+
+If we want to subset just one treatment, we can use the function filter(): IMPORTANT NOTE: In this case, "" are necessary as we are asking for a matching character value.
+
+```{r}
+#| eval: FALSE
+PPDOnly <- Data |> filter(Condition == "PPD")
+head(PPDOnly, 5)
+```
+      bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
+1 INF0052         0       PPD 2025-07-26       Male HEU-hi 2363512     2136616     1875394      1732620 0.5873838    0.8619837 0.8429685
+2 INF0100         0       PPD 2025-07-26       Male HEU-lo 2049112     1821676     1717636      1597085 0.9063081    0.9251961 0.8771889
+3 INF0100         4       PPD 2025-07-26       Male HEU-lo 1063496      946587      796056       767297 0.9709891    0.9848719 0.9556049
+4 INF0100         9       PPD 2025-07-26       Male HEU-lo  788368      714198      626387       600011 0.9822803    0.9842139 0.8123041
+5 INF0179         0       PPD 2025-07-26       Male     HU 1380336     1242311     1047081      1000877 0.9470275    0.9575685 0.9134438
+  lymphocytes      live      Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1   0.6408044 0.9009254 0.20743228 0.6934931 0.2835676 0.007408209 0.9925918 0.01507057 0.9775212 0.6340345 0.3434867 0.2744119
+2   0.2174284 0.8929673 0.06181426 0.8311531 0.6735798 0.007137230 0.9928628 0.01671801 0.9761448 0.6145707 0.3615741 0.3312279
+3   0.7313503 0.8782307 0.20727202 0.6709587 0.5989873 0.005254643 0.9947454 0.01609790 0.9786475 0.6559480 0.3226994 0.2912084
+4   0.6223228 0.9566639 0.23164587 0.7250180 0.6489405 0.011935922 0.9880641 0.01855298 0.9695111 0.4306889 0.5388222 0.4908558
+5   0.6996502 0.8856898 0.33186111 0.5538287 0.4441538 0.004382972 0.9956170 0.01297237 0.9826447 0.7499194 0.2327253 0.1850897
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06907479       184930            652155 0.13801632 0.15703150    1017713
+2 0.03034620       211987            314717 0.07480391 0.12281107    1447451
+3 0.03149109       326378            544883 0.01512811 0.04439511     745037
+4 0.04796636       238021            366784 0.01578611 0.18769586     589379
+5 0.04763554       294549            663169 0.04243146 0.08655621     947858
+
+Although the code previously used works, it can generate error, specially with character values. For that reason, it is better to use  %in% operator to extract rows from a column.
+
+```{r}
+#| eval: FALSE
+Data |> filter(Condition %in% "PPD") |> head(5)
+```
+      bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
+1 INF0052         0       PPD 2025-07-26       Male HEU-hi 2363512     2136616     1875394      1732620 0.5873838    0.8619837 0.8429685
+2 INF0100         0       PPD 2025-07-26       Male HEU-lo 2049112     1821676     1717636      1597085 0.9063081    0.9251961 0.8771889
+3 INF0100         4       PPD 2025-07-26       Male HEU-lo 1063496      946587      796056       767297 0.9709891    0.9848719 0.9556049
+4 INF0100         9       PPD 2025-07-26       Male HEU-lo  788368      714198      626387       600011 0.9822803    0.9842139 0.8123041
+5 INF0179         0       PPD 2025-07-26       Male     HU 1380336     1242311     1047081      1000877 0.9470275    0.9575685 0.9134438
+  lymphocytes      live      Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1   0.6408044 0.9009254 0.20743228 0.6934931 0.2835676 0.007408209 0.9925918 0.01507057 0.9775212 0.6340345 0.3434867 0.2744119
+2   0.2174284 0.8929673 0.06181426 0.8311531 0.6735798 0.007137230 0.9928628 0.01671801 0.9761448 0.6145707 0.3615741 0.3312279
+3   0.7313503 0.8782307 0.20727202 0.6709587 0.5989873 0.005254643 0.9947454 0.01609790 0.9786475 0.6559480 0.3226994 0.2912084
+4   0.6223228 0.9566639 0.23164587 0.7250180 0.6489405 0.011935922 0.9880641 0.01855298 0.9695111 0.4306889 0.5388222 0.4908558
+5   0.6996502 0.8856898 0.33186111 0.5538287 0.4441538 0.004382972 0.9956170 0.01297237 0.9826447 0.7499194 0.2327253 0.1850897
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06907479       184930            652155 0.13801632 0.15703150    1017713
+2 0.03034620       211987            314717 0.07480391 0.12281107    1447451
+3 0.03149109       326378            544883 0.01512811 0.04439511     745037
+4 0.04796636       238021            366784 0.01578611 0.18769586     589379
+5 0.04763554       294549            663169 0.04243146 0.08655621     947858
+
+As we saw in previous functions, we can also filter several rows or conditions at once:
+
+```{r}
+#|eval: FALSE
+Data |> filter(Condition %in% c("PPD", "SEB")) |> head(5)
+```
+      bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
+1 INF0052         0       PPD 2025-07-26       Male HEU-hi 2363512     2136616     1875394      1732620 0.5873838    0.8619837 0.8429685
+2 INF0100         0       PPD 2025-07-26       Male HEU-lo 2049112     1821676     1717636      1597085 0.9063081    0.9251961 0.8771889
+3 INF0100         4       PPD 2025-07-26       Male HEU-lo 1063496      946587      796056       767297 0.9709891    0.9848719 0.9556049
+4 INF0100         9       PPD 2025-07-26       Male HEU-lo  788368      714198      626387       600011 0.9822803    0.9842139 0.8123041
+5 INF0179         0       PPD 2025-07-26       Male     HU 1380336     1242311     1047081      1000877 0.9470275    0.9575685 0.9134438
+  lymphocytes      live      Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1   0.6408044 0.9009254 0.20743228 0.6934931 0.2835676 0.007408209 0.9925918 0.01507057 0.9775212 0.6340345 0.3434867 0.2744119
+2   0.2174284 0.8929673 0.06181426 0.8311531 0.6735798 0.007137230 0.9928628 0.01671801 0.9761448 0.6145707 0.3615741 0.3312279
+3   0.7313503 0.8782307 0.20727202 0.6709587 0.5989873 0.005254643 0.9947454 0.01609790 0.9786475 0.6559480 0.3226994 0.2912084
+4   0.6223228 0.9566639 0.23164587 0.7250180 0.6489405 0.011935922 0.9880641 0.01855298 0.9695111 0.4306889 0.5388222 0.4908558
+5   0.6996502 0.8856898 0.33186111 0.5538287 0.4441538 0.004382972 0.9956170 0.01297237 0.9826447 0.7499194 0.2327253 0.1850897
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06907479       184930            652155 0.13801632 0.15703150    1017713
+2 0.03034620       211987            314717 0.07480391 0.12281107    1447451
+3 0.03149109       326378            544883 0.01512811 0.04439511     745037
+4 0.04796636       238021            366784 0.01578611 0.18769586     589379
+5 0.04763554       294549            663169 0.04243146 0.08655621     947858
+
+Or we can set up the vector first and then filter the vector:
+
+```{r}
+#| eval: FALSE
+TheseConditions <- c("PPD", "SEB")
+Data |> filter(Condition %in% TheseConditions) |> head(5)
+```
+      bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
+1 INF0052         0       PPD 2025-07-26       Male HEU-hi 2363512     2136616     1875394      1732620 0.5873838    0.8619837 0.8429685
+2 INF0100         0       PPD 2025-07-26       Male HEU-lo 2049112     1821676     1717636      1597085 0.9063081    0.9251961 0.8771889
+3 INF0100         4       PPD 2025-07-26       Male HEU-lo 1063496      946587      796056       767297 0.9709891    0.9848719 0.9556049
+4 INF0100         9       PPD 2025-07-26       Male HEU-lo  788368      714198      626387       600011 0.9822803    0.9842139 0.8123041
+5 INF0179         0       PPD 2025-07-26       Male     HU 1380336     1242311     1047081      1000877 0.9470275    0.9575685 0.9134438
+  lymphocytes      live      Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1   0.6408044 0.9009254 0.20743228 0.6934931 0.2835676 0.007408209 0.9925918 0.01507057 0.9775212 0.6340345 0.3434867 0.2744119
+2   0.2174284 0.8929673 0.06181426 0.8311531 0.6735798 0.007137230 0.9928628 0.01671801 0.9761448 0.6145707 0.3615741 0.3312279
+3   0.7313503 0.8782307 0.20727202 0.6709587 0.5989873 0.005254643 0.9947454 0.01609790 0.9786475 0.6559480 0.3226994 0.2912084
+4   0.6223228 0.9566639 0.23164587 0.7250180 0.6489405 0.011935922 0.9880641 0.01855298 0.9695111 0.4306889 0.5388222 0.4908558
+5   0.6996502 0.8856898 0.33186111 0.5538287 0.4441538 0.004382972 0.9956170 0.01297237 0.9826447 0.7499194 0.2327253 0.1850897
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06907479       184930            652155 0.13801632 0.15703150    1017713
+2 0.03034620       211987            314717 0.07480391 0.12281107    1447451
+3 0.03149109       326378            544883 0.01512811 0.04439511     745037
+4 0.04796636       238021            366784 0.01578611 0.18769586     589379
+5 0.04763554       294549            663169 0.04243146 0.08655621     947858
+
+This is OK for a low number of conditions, but when we want to select everything except one condition, it is better to use the opposite. We have to remember the formula "!", this is used in logical values to get the opposite:
+
+```{r}
+#| eval: FALSE
+Subset <- Data |> filter(!Condition %in% "SEB")
+Subset |> pull(Condition) |> unique()
+```
+[1] "Ctrl" "PPD" 
+
+we can use "!" also with the select() function:
+
+```{r}
+#| eval: FALSE
+Subset <- Data |> select(!timepoint)
+Subset[1:3,]
+```
+      bid Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
+1 INF0052      Ctrl 2025-07-26       Male HEU-hi 2098368     1894070     1666179      1537396 0.5952943    0.8820349 0.8627649
+2 INF0100      Ctrl 2025-07-26       Male HEU-lo 2020184     1791890     1697083      1579098 0.9106762    0.9052256 0.8602660
+3 INF0100      Ctrl 2025-07-26       Male HEU-lo 1155040     1033320      875465       845446 0.9705765    0.9845400 0.9578793
+  lymphocytes      live      Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+
+1   0.6420138 0.9020581 0.21090996 0.6911482 0.2804264 0.008120361 0.9918796 0.01448070 0.9773989 0.6341164 0.3432825 0.2734826
+2   0.2145848 0.8908981 0.06252775 0.8283703 0.6748298 0.007265620 0.9927344 0.01577499 0.9769594 0.6119112 0.3650482 0.3357696
+3   0.7403110 0.8757665 0.20023803 0.6755285 0.6119129 0.004651313 0.9953487 0.01579402 0.9795547 0.6639621 0.3155925 0.2862104
+        CD8- Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
+1 0.06979990       164771            587573 0.11796509 0.13723513     915203
+2 0.02927858       208241            308583 0.09477437 0.13973396    1438047
+3 0.02938209       371723            607477 0.01545999 0.04212072     820570
+
+We can also use the mutate() function if we want to alter the content of a column or add new ones. Let’s start by transforming our current Data in to a smaller workable data.frame, highlighting the functions and pipes we learned about today:
+
+```{r}
+#| eval: FALSE
+TidyData <- Data |> filter(Condition %in% "Ctrl") |> filter(timepoint %in% "0") |> select(bid, timepoint, Condition, Date, Tcells_count, CD45_count) |> rename(specimen=bid, condition=Condition) |> relocate(Date, .after=specimen)
+TidyData
+```
+specimen       Date timepoint condition Tcells_count CD45_count
+1   INF0052 2025-07-26         0      Ctrl       164771     915203
+2   INF0100 2025-07-26         0      Ctrl       208241    1438047
+3   INF0179 2025-07-26         0      Ctrl       291777     940733
+4   INF0134 2025-07-29         0      Ctrl       127866     689676
+5   INF0148 2025-07-29         0      Ctrl       234335    1013985
+6   INF0191 2025-07-29         0      Ctrl        55780     715443
+7   INF0124 2025-07-31         0      Ctrl        70297     687720
+8   INF0149 2025-07-31         0      Ctrl       107900     857845
+9   INF0169 2025-07-31         0      Ctrl        75540     854594
+10  INF0019 2025-08-05         0      Ctrl       208055     873622
+11  INF0032 2025-08-05         0      Ctrl       361034     753064
+12  INF0180 2025-08-05         0      Ctrl       284958    1049663
+13  INF0155 2025-08-07         0      Ctrl       281626    1065048
+14  INF0158 2025-08-07         0      Ctrl       280913    1249338
+15  INF0159 2025-08-07         0      Ctrl       452551    1190219
+16  INF0013 2025-08-22         0      Ctrl       182751     836573
+17  INF0023 2025-08-22         0      Ctrl       218435     968035
+18  INF0030 2025-08-22         0      Ctrl        85521     732321
+19  INF0166 2025-08-28         0      Ctrl       225650     739495
+20  INF0199 2025-08-28         0      Ctrl       169736    1112176
+21  INF0207 2025-08-28         0      Ctrl        39055     905365
+22  INF0614 2025-08-30         0      Ctrl       224396    1569007
+23  INF0622 2025-08-30         0      Ctrl       161924     939307
+
+And now, we can use the mutate() function. In this example, we add a new column based on the Tcells_count and CD45_count:
+```{r}
+#| eval: FALSE
+TidyData <- TidyData |> mutate(Tcells_ProportionCD45 = Tcells_count / CD45_count)
+TidyData
+```
+   specimen       Date timepoint condition Tcells_count CD45_count Tcells_ProportionCD45
+1   INF0052 2025-07-26         0      Ctrl       164771     915203            0.18003765
+2   INF0100 2025-07-26         0      Ctrl       208241    1438047            0.14480820
+3   INF0179 2025-07-26         0      Ctrl       291777     940733            0.31015921
+4   INF0134 2025-07-29         0      Ctrl       127866     689676            0.18540010
+5   INF0148 2025-07-29         0      Ctrl       234335    1013985            0.23110302
+6   INF0191 2025-07-29         0      Ctrl        55780     715443            0.07796568
+7   INF0124 2025-07-31         0      Ctrl        70297     687720            0.10221747
+8   INF0149 2025-07-31         0      Ctrl       107900     857845            0.12578030
+9   INF0169 2025-07-31         0      Ctrl        75540     854594            0.08839285
+10  INF0019 2025-08-05         0      Ctrl       208055     873622            0.23815220
+11  INF0032 2025-08-05         0      Ctrl       361034     753064            0.47942008
+12  INF0180 2025-08-05         0      Ctrl       284958    1049663            0.27147570
+13  INF0155 2025-08-07         0      Ctrl       281626    1065048            0.26442564
+14  INF0158 2025-08-07         0      Ctrl       280913    1249338            0.22484948
+15  INF0159 2025-08-07         0      Ctrl       452551    1190219            0.38022498
+16  INF0013 2025-08-22         0      Ctrl       182751     836573            0.21845195
+17  INF0023 2025-08-22         0      Ctrl       218435     968035            0.22564783
+18  INF0030 2025-08-22         0      Ctrl        85521     732321            0.11678076
+19  INF0166 2025-08-28         0      Ctrl       225650     739495            0.30514067
+20  INF0199 2025-08-28         0      Ctrl       169736    1112176            0.15261613
+21  INF0207 2025-08-28         0      Ctrl        39055     905365            0.04313730
+22  INF0614 2025-08-30         0      Ctrl       224396    1569007            0.14301785
+23  INF0622 2025-08-30         0      Ctrl       161924     939307            0.17238666
+
+
