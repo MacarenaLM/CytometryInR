@@ -2,7 +2,7 @@
 title: "week4_Introduction to tidyverse"
 author: "Macarena López-Mayorga"
 date: 2026-03-27
-format: html
+format: pdf
 ---
 First, we need to indicate where is located the file
 
@@ -347,7 +347,7 @@ colnames(Subset)
 We can also do that in a different way:
 
 ```{r}
-#|eval: FALSE
+#| eval: FALSE
 Renamed <- Subset |> rename(CD4_Positive = `CD4+`)
 colnames(Renamed)
 ```
@@ -440,7 +440,7 @@ Data |> filter(Condition %in% "PPD") |> head(5)
 As we saw in previous functions, we can also filter several rows or conditions at once:
 
 ```{r}
-#|eval: FALSE
+#| eval: FALSE
 Data |> filter(Condition %in% c("PPD", "SEB")) |> head(5)
 ```
       bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
@@ -580,4 +580,101 @@ TidyData
 22  INF0614 2025-08-30         0      Ctrl       224396    1569007            0.14301785
 23  INF0622 2025-08-30         0      Ctrl       161924     939307            0.17238666
 
+We can see that we have many significant digits being returned. Let’s round this new column to 2 significant digits by applying the round() function
 
+```{r}
+#| eval: FALSE
+TidyData <- TidyData |> mutate(TcellsRounded = round(Tcells_ProportionCD45, 2))
+TidyData 
+```
+   specimen       Date timepoint condition Tcells_count CD45_count Tcells_ProportionCD45 TcellsRounded
+1   INF0052 2025-07-26         0      Ctrl       164771     915203            0.18003765          0.18
+2   INF0100 2025-07-26         0      Ctrl       208241    1438047            0.14480820          0.14
+3   INF0179 2025-07-26         0      Ctrl       291777     940733            0.31015921          0.31
+4   INF0134 2025-07-29         0      Ctrl       127866     689676            0.18540010          0.19
+5   INF0148 2025-07-29         0      Ctrl       234335    1013985            0.23110302          0.23
+6   INF0191 2025-07-29         0      Ctrl        55780     715443            0.07796568          0.08
+7   INF0124 2025-07-31         0      Ctrl        70297     687720            0.10221747          0.10
+8   INF0149 2025-07-31         0      Ctrl       107900     857845            0.12578030          0.13
+9   INF0169 2025-07-31         0      Ctrl        75540     854594            0.08839285          0.09
+10  INF0019 2025-08-05         0      Ctrl       208055     873622            0.23815220          0.24
+11  INF0032 2025-08-05         0      Ctrl       361034     753064            0.47942008          0.48
+12  INF0180 2025-08-05         0      Ctrl       284958    1049663            0.27147570          0.27
+13  INF0155 2025-08-07         0      Ctrl       281626    1065048            0.26442564          0.26
+14  INF0158 2025-08-07         0      Ctrl       280913    1249338            0.22484948          0.22
+15  INF0159 2025-08-07         0      Ctrl       452551    1190219            0.38022498          0.38
+16  INF0013 2025-08-22         0      Ctrl       182751     836573            0.21845195          0.22
+17  INF0023 2025-08-22         0      Ctrl       218435     968035            0.22564783          0.23
+18  INF0030 2025-08-22         0      Ctrl        85521     732321            0.11678076          0.12
+19  INF0166 2025-08-28         0      Ctrl       225650     739495            0.30514067          0.31
+20  INF0199 2025-08-28         0      Ctrl       169736    1112176            0.15261613          0.15
+21  INF0207 2025-08-28         0      Ctrl        39055     905365            0.04313730          0.04
+22  INF0614 2025-08-30         0      Ctrl       224396    1569007            0.14301785          0.14
+23  INF0622 2025-08-30         0      Ctrl       161924     939307            0.17238666          0.17
+
+Let’s rearrange the rows so that they are descending based on the Tcell proportion. We can use this by using the desc() and arrange() functions from dplyr:
+
+```{r}
+#| eval: FALSE
+TidyData <- TidyData |> arrange(desc(TcellsRounded))
+TidyData
+```
+   specimen       Date timepoint condition Tcells_count CD45_count Tcells_ProportionCD45 TcellsRounded
+1   INF0032 2025-08-05         0      Ctrl       361034     753064            0.47942008          0.48
+2   INF0159 2025-08-07         0      Ctrl       452551    1190219            0.38022498          0.38
+3   INF0179 2025-07-26         0      Ctrl       291777     940733            0.31015921          0.31
+4   INF0166 2025-08-28         0      Ctrl       225650     739495            0.30514067          0.31
+5   INF0180 2025-08-05         0      Ctrl       284958    1049663            0.27147570          0.27
+6   INF0155 2025-08-07         0      Ctrl       281626    1065048            0.26442564          0.26
+7   INF0019 2025-08-05         0      Ctrl       208055     873622            0.23815220          0.24
+8   INF0148 2025-07-29         0      Ctrl       234335    1013985            0.23110302          0.23
+9   INF0023 2025-08-22         0      Ctrl       218435     968035            0.22564783          0.23
+10  INF0158 2025-08-07         0      Ctrl       280913    1249338            0.22484948          0.22
+11  INF0013 2025-08-22         0      Ctrl       182751     836573            0.21845195          0.22
+12  INF0134 2025-07-29         0      Ctrl       127866     689676            0.18540010          0.19
+13  INF0052 2025-07-26         0      Ctrl       164771     915203            0.18003765          0.18
+14  INF0622 2025-08-30         0      Ctrl       161924     939307            0.17238666          0.17
+15  INF0199 2025-08-28         0      Ctrl       169736    1112176            0.15261613          0.15
+16  INF0100 2025-07-26         0      Ctrl       208241    1438047            0.14480820          0.14
+17  INF0614 2025-08-30         0      Ctrl       224396    1569007            0.14301785          0.14
+18  INF0149 2025-07-31         0      Ctrl       107900     857845            0.12578030          0.13
+19  INF0030 2025-08-22         0      Ctrl        85521     732321            0.11678076          0.12
+20  INF0124 2025-07-31         0      Ctrl        70297     687720            0.10221747          0.10
+21  INF0169 2025-07-31         0      Ctrl        75540     854594            0.08839285          0.09
+22  INF0191 2025-07-29         0      Ctrl        55780     715443            0.07796568          0.08
+23  INF0207 2025-08-28         0      Ctrl        39055     905365            0.04313730          0.04
+
+And let’s go ahead and filter() and identify the specimens that had more than 30% T cells as part of the overall CD45 gate (context, these samples were Cord Blood):
+```{r}
+#| eval: FALSE
+TidyData |> filter(TcellsRounded > 0.3)
+```
+  specimen       Date timepoint condition Tcells_count CD45_count Tcells_ProportionCD45 TcellsRounded
+1  INF0032 2025-08-05         0      Ctrl       361034     753064             0.4794201          0.48
+2  INF0159 2025-08-07         0      Ctrl       452551    1190219             0.3802250          0.38
+3  INF0179 2025-07-26         0      Ctrl       291777     940733             0.3101592          0.31
+4  INF0166 2025-08-28         0      Ctrl       225650     739495             0.3051407          0.31
+
+If we want just the ID (specimen) from this last list of items, we can use the pull() function:
+
+```{r}
+#| eval: FALSE
+TidyData |> filter(TcellsRounded > 0.3) |> pull(specimen)
+```
+[1] "INF0032" "INF0159" "INF0179" "INF0166"
+
+And finally, since I may want to send the data to a supervisor, let’s go ahead and export this “tidyed” version of our data.frame out to it’s own .csv file. Working within our project folder, this would look like this:
+
+```{r}
+#| eval: FALSE
+NewName <- paste0("MyNewDataset", ".csv")
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/week04/04_IntroToTidyverse/data", NewName)
+StorageLocation
+```
+[1] "C:/Users/Macarena/CytometryInR/course/week04/04_IntroToTidyverse/data/MyNewDataset.csv"
+
+
+```{r}
+#| eval: FALSE
+write.csv(TidyData, StorageLocation, row.names=FALSE)
+```
