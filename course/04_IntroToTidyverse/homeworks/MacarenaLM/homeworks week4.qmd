@@ -132,32 +132,27 @@ Data |> pull(timepoint) |> unique()
 ```
 [1] 0 4 9
 
-Let's filter by the intermediate timepoint (4):
+Now we are going to organize the data.frame: we are going to filter by timepoint and sex, reduce the data.frame selecting a few columns, create new columns named Tcells_ProportionCD45 and TcellsRounded with two significant digits, rearrange by descending values of this last column and select those data with TcellsRounded values higher than 0.4:
 
 ```{r}
-IntermediateTimepoint <- Data
-IntermediateTimepoint |> filter(timepoint %in% "4") |> head(5)
+Subset <- Data |> filter(timepoint %in% "4") |> filter (Sex %in% "Female") |> select(Specimen, timepoint, Condition, Date, Sex, Tcells_count, CD45_count) |> mutate(Tcells_ProportionCD45 = Tcells_count/CD45_count, TcellsRounded = round(Tcells_ProportionCD45, 2)) |> arrange(desc(TcellsRounded)) |> filter(TcellsRounded > 0.4)
+Subset
 ```
-  Specimen timepoint Condition       Date    Sex  ptype    root singletsFSC singletsSSC singletsSSCB      CD45 NotMonocytes nonDebris
-1  INF0100         4      Ctrl 2025-07-26   Male HEU-lo 1155040     1033320      875465       845446 0.9705765    0.9845400 0.9578793
-2  INF0179         4      Ctrl 2025-07-26   Male     HU 1044808      917398      735579       685592 0.9858006    0.9622894 0.9499243
-3  INF0186         4      Ctrl 2025-07-26 Female HEU-hi  972056      875707      767323       718000 0.9772382    0.9490663 0.9189704
-4  INF0100         4       PPD 2025-07-26   Male HEU-lo 1063496      946587      796056       767297 0.9709891    0.9848719 0.9556049
-5  INF0179         4       PPD 2025-07-26   Male     HU 1240984     1089933      868877       814909 0.9855947    0.9541417 0.9400824
-  lymphocytes      live     Dump+     Dump-    Tcells        Vd2+      Vd2-     Va7.2+    Va7.2-      CD4+      CD4-      CD8+       CD8-
-1   0.7403110 0.8757665 0.2002380 0.6755285 0.6119129 0.004651313 0.9953487 0.01579402 0.9795547 0.6639621 0.3155925 0.2862104 0.02938209
-2   0.7556776 0.9673056 0.3694731 0.5978325 0.5323165 0.005160555 0.9948394 0.01246184 0.9823776 0.5876264 0.3947512 0.3571376 0.03761357
-3   0.6428312 0.8756515 0.3251679 0.5504837 0.4891597 0.009300470 0.9906995 0.03877009 0.9519294 0.5724730 0.3794565 0.3555526 0.02390384
-4   0.7313503 0.8782307 0.2072720 0.6709587 0.5989873 0.005254643 0.9947454 0.01609790 0.9786475 0.6559480 0.3226994 0.2912084 0.03149109
-5   0.7303074 0.9602599 0.3435721 0.6166878 0.5654655 0.004320429 0.9956796 0.01266884 0.9830107 0.6318771 0.3511336 0.3177460 0.03338760
-  Tcells_count lymphocytes_count  Monocytes     Debris CD45_count
-1       371723            607477 0.01545999 0.04212072     820570
-2       271870            510730 0.03771064 0.05007568     675857
-3       220634            451047 0.05093372 0.08102962     701657
-4       326378            544883 0.01512811 0.04439511     745037
-5       331680            586561 0.04585829 0.05991758     803170
+  Specimen timepoint Condition       Date    Sex Tcells_count CD45_count Tcells_ProportionCD45 TcellsRounded
+1  INF0191         4      Ctrl 2025-07-29 Female       227949     427368             0.5333787          0.53
+2  INF0155         4      Ctrl 2025-08-07 Female       412580     811417             0.5084685          0.51
+3  INF0155         4       PPD 2025-08-07 Female       473057     935619             0.5056086          0.51
+4  INF0191         4       PPD 2025-07-29 Female       342753     708666             0.4836594          0.48
+5  INF0155         4       SEB 2025-08-07 Female       332018     691118             0.4804071          0.48
+ 
+ Now we have this data.frame. We are going to export to a csv file:
+ 
+ ```{r}
+ NewName <- paste0("NewDataset", ".csv")
+ StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/NewDataset.csv")
+ StorageLocation
+ ```
 
 ```{r}
-Subset <- IntermediateData
-Subset |> filter()
+write.csv(Subset, StorageLocation, row.names=FALSE)
 ```
