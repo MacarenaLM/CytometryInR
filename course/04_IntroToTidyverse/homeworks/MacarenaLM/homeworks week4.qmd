@@ -156,3 +156,59 @@ Subset
 ```{r}
 write.csv(Subset, StorageLocation, row.names=FALSE)
 ```
+
+# Problem 2
+
+First, we have to indicate the file path:
+```{r}
+FilePath <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv")
+FilePath
+```
+[1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv"
+
+Then, we call utils package
+```{r}
+library(utils)
+```
+
+We read the name of columns:
+```{r}
+Data <- read.csv(file=FilePath, check.names=FALSE)
+colnames(Data)
+```
+[1] "bid"               "timepoint"         "Condition"         "Date"              "infant_sex"        "ptype"            
+ [7] "root"              "singletsFSC"       "singletsSSC"       "singletsSSCB"      "CD45"              "NotMonocytes"     
+[13] "nonDebris"         "lymphocytes"       "live"              "Dump+"             "Dump-"             "Tcells"           
+[19] "Vd2+"              "Vd2-"              "Va7.2+"            "Va7.2-"            "CD4+"              "CD4-"             
+[25] "CD8+"              "CD8-"              "Tcells_count"      "lymphocytes_count" "Monocytes"         "Debris"           
+[31] "CD45_count"
+
+To know how look the data, I am going to check the first 3 rows:
+
+```{r}
+head(Data,3)
+```
+
+Wit this code I want to round all columns (across) where the parameters are numeric (where(is.numeric)) and (&) I want to remove from selection those columns that ends in "count" (!ends_with("count")), because they don't have commas. And then, I specify that I want to round to 2 significant digits:
+```{r}
+RoundedData <- Data |> mutate(across(where(is.numeric) & !ends_with("count"), ~ round(.x, 2)))
+RoundedData |> head(5)
+```
+      bid timepoint Condition       Date infant_sex  ptype    root singletsFSC singletsSSC singletsSSCB CD45 NotMonocytes nonDebris
+1 INF0052         0      Ctrl 2025-07-26       Male HEU-hi 2098368     1894070     1666179      1537396 0.60         0.88      0.86
+2 INF0100         0      Ctrl 2025-07-26       Male HEU-lo 2020184     1791890     1697083      1579098 0.91         0.91      0.86
+3 INF0100         4      Ctrl 2025-07-26       Male HEU-lo 1155040     1033320      875465       845446 0.97         0.98      0.96
+4 INF0100         9      Ctrl 2025-07-26       Male HEU-lo  358624      328624      289327       276289 0.98         0.99      0.94
+5 INF0179         0      Ctrl 2025-07-26       Male     HU 1362216     1206309     1032946       982736 0.96         0.96      0.84
+  lymphocytes live Dump+ Dump- Tcells Vd2+ Vd2- Va7.2+ Va7.2- CD4+ CD4- CD8+ CD8- Tcells_count lymphocytes_count Monocytes Debris
+1        0.64 0.90  0.21  0.69   0.28 0.01 0.99   0.01   0.98 0.63 0.34 0.27 0.07       164771            587573      0.12   0.14
+2        0.21 0.89  0.06  0.83   0.67 0.01 0.99   0.02   0.98 0.61 0.37 0.34 0.03       208241            308583      0.09   0.14
+3        0.74 0.88  0.20  0.68   0.61 0.00 1.00   0.02   0.98 0.66 0.32 0.29 0.03       371723            607477      0.02   0.04
+4        0.65 0.92  0.21  0.70   0.63 0.01 0.99   0.02   0.97 0.44 0.53 0.49 0.05       111552            176662      0.01   0.06
+5        0.71 0.90  0.34  0.56   0.44 0.00 1.00   0.01   0.98 0.74 0.24 0.20 0.05       291777            663667      0.04   0.16
+  CD45_count
+1     915203
+2    1438047
+3     820570
+4     271304
+5     940733
