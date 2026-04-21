@@ -166,9 +166,10 @@ FilePath
 ```
 [1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv"
 
-Then, we call utils package
+Then, we call utils and dplyr packages
 ```{r}
 library(utils)
+library(dplyr)
 ```
 
 We read the name of columns:
@@ -189,7 +190,7 @@ To know how look the data, I am going to check the first 3 rows:
 head(Data,3)
 ```
 
-Wit this code I want to round all columns (across) where the parameters are numeric (where(is.numeric)) and (&) I want to remove from selection those columns that ends in "count" (!ends_with("count")), because they don't have commas. And then, I specify that I want to round to 2 significant digits:
+Wit this code I want to round all columns (across) where the parameters are numeric (where(is.numeric)) and (&) I want to remove from selection those columns that ends in "count" (!ends_with("count")), because they don't have commas in their numeric values. And then, I specify that I want to round to 2 significant digits (~ round(.x, 2)):
 ```{r}
 RoundedData <- Data |> mutate(across(where(is.numeric) & !ends_with("count"), ~ round(.x, 2)))
 RoundedData |> head(5)
@@ -212,3 +213,24 @@ RoundedData |> head(5)
 3     820570
 4     271304
 5     940733
+
+And now, we are going to create a new csv file with this changes
+
+```{r}
+NewName <- paste0("RoundedDataset", ".csv")
+ StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/RoundedDataset.csv")
+ StorageLocation
+```
+
+```{r}
+write.csv(RoundedData, StorageLocation, row.names=FALSE)
+```
+
+# Problem 3
+As we did with the anterior problems, let's indicate the file path:
+
+```{r}
+FilePath <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv")
+FilePath
+```
+[1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv"
