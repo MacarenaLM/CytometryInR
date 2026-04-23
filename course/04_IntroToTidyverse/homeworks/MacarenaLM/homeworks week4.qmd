@@ -234,3 +234,62 @@ FilePath <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse
 FilePath
 ```
 [1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv"
+
+And we are going to call the packages that we need:
+
+```{r}
+library(utils)
+library(dplyr)
+```
+
+Now, we are going to combine the three columns (bid, timepoint and Condition) as a name of a fcs file
+```{r}
+Data <- read.csv(file=FilePath, check.names=FALSE)
+NewColumn <- Data |> mutate(filename=paste0(bid, "_", timepoint, "_", Condition, ".fcs"))
+```
+
+Now, we can pull this column:
+```{r}
+NewColumn |> pull(filename)
+```
+  [1] "INF0052_0_Ctrl.fcs" "INF0100_0_Ctrl.fcs" "INF0100_4_Ctrl.fcs" "INF0100_9_Ctrl.fcs" "INF0179_0_Ctrl.fcs" "INF0179_4_Ctrl.fcs"
+  [7] "INF0179_9_Ctrl.fcs" "INF0186_4_Ctrl.fcs" "INF0186_9_Ctrl.fcs" "INF0052_0_PPD.fcs"  "INF0100_0_PPD.fcs"  "INF0100_4_PPD.fcs" 
+ [13] "INF0100_9_PPD.fcs"  "INF0179_0_PPD.fcs"  "INF0179_4_PPD.fcs"  "INF0179_9_PPD.fcs"  "INF0186_4_PPD.fcs"  "INF0186_9_PPD.fcs" 
+ [19] "INF0052_0_SEB.fcs"  "INF0100_0_SEB.fcs"  "INF0100_4_SEB.fcs"  "INF0179_0_SEB.fcs"  "INF0179_4_SEB.fcs"  "INF0179_9_SEB.fcs" 
+ [25] "INF0186_4_SEB.fcs"  "INF0186_9_SEB.fcs"  "INF0134_0_Ctrl.fcs" "INF0134_4_Ctrl.fcs" "INF0134_9_Ctrl.fcs" "INF0148_0_Ctrl.fcs"
+ [31] "INF0148_9_Ctrl.fcs" "INF0191_0_Ctrl.fcs" "INF0191_4_Ctrl.fcs" "INF0191_9_Ctrl.fcs" "INF0134_0_PPD.fcs"  "INF0134_4_PPD.fcs" 
+ [37] "INF0134_9_PPD.fcs"  "INF0148_0_PPD.fcs"  "INF0148_4_PPD.fcs"  "INF0148_9_PPD.fcs"  "INF0191_0_PPD.fcs"  "INF0191_4_PPD.fcs" 
+ [43] "INF0191_9_PPD.fcs"  "INF0134_0_SEB.fcs"  "INF0134_4_SEB.fcs"  "INF0148_0_SEB.fcs"  "INF0191_0_SEB.fcs"  "INF0191_9_SEB.fcs" 
+ [49] "INF0124_0_Ctrl.fcs" "INF0124_4_Ctrl.fcs" "INF0124_9_Ctrl.fcs" "INF0149_0_Ctrl.fcs" "INF0149_4_Ctrl.fcs" "INF0149_9_Ctrl.fcs"
+ [55] "INF0169_0_Ctrl.fcs" "INF0169_4_Ctrl.fcs" "INF0169_9_Ctrl.fcs" "INF0124_0_PPD.fcs"  "INF0124_4_PPD.fcs"  "INF0124_9_PPD.fcs" 
+ [61] "INF0149_0_PPD.fcs"  "INF0149_4_PPD.fcs"  "INF0149_9_PPD.fcs"  "INF0169_0_PPD.fcs"  "INF0169_4_PPD.fcs"  "INF0169_9_PPD.fcs" 
+ [67] "INF0124_0_SEB.fcs"  "INF0124_4_SEB.fcs"  "INF0124_9_SEB.fcs"  "INF0149_0_SEB.fcs"  "INF0149_4_SEB.fcs"  "INF0149_9_SEB.fcs" 
+ [73] "INF0169_0_SEB.fcs"  "INF0169_4_SEB.fcs"  "INF0169_9_SEB.fcs"  "INF0019_0_Ctrl.fcs" "INF0019_4_Ctrl.fcs" "INF0019_9_Ctrl.fcs"
+ [79] "INF0032_0_Ctrl.fcs" "INF0032_4_Ctrl.fcs" "INF0032_9_Ctrl.fcs" "INF0180_0_Ctrl.fcs" "INF0180_4_Ctrl.fcs" "INF0019_0_PPD.fcs" 
+ [85] "INF0019_4_PPD.fcs"  "INF0019_9_PPD.fcs"  "INF0032_0_PPD.fcs"  "INF0032_4_PPD.fcs"  "INF0032_9_PPD.fcs"  "INF0180_0_PPD.fcs" 
+ [91] "INF0180_4_PPD.fcs"  "INF0180_9_PPD.fcs"  "INF0019_0_SEB.fcs"  "INF0019_4_SEB.fcs"  "INF0019_9_SEB.fcs"  "INF0032_0_SEB.fcs" 
+ [97] "INF0032_9_SEB.fcs"  "INF0180_0_SEB.fcs"  "INF0155_0_Ctrl.fcs" "INF0155_4_Ctrl.fcs" "INF0155_9_Ctrl.fcs" "INF0158_0_Ctrl.fcs"
+[103] "INF0158_4_Ctrl.fcs" "INF0158_9_Ctrl.fcs" "INF0159_0_Ctrl.fcs" "INF0159_4_Ctrl.fcs" "INF0159_9_Ctrl.fcs" "INF0155_0_PPD.fcs" 
+[109] "INF0155_4_PPD.fcs"  "INF0155_9_PPD.fcs"  "INF0158_0_PPD.fcs"  "INF0158_4_PPD.fcs"  "INF0158_9_PPD.fcs"  "INF0159_0_PPD.fcs" 
+[115] "INF0159_4_PPD.fcs"  "INF0159_9_PPD.fcs"  "INF0155_0_SEB.fcs"  "INF0155_4_SEB.fcs"  "INF0158_0_SEB.fcs"  "INF0158_4_SEB.fcs" 
+[121] "INF0158_9_SEB.fcs"  "INF0159_0_SEB.fcs"  "INF0159_4_SEB.fcs"  "INF0159_9_SEB.fcs"  "INF0013_0_Ctrl.fcs" "INF0013_4_Ctrl.fcs"
+[127] "INF0013_9_Ctrl.fcs" "INF0023_0_Ctrl.fcs" "INF0023_4_Ctrl.fcs" "INF0023_9_Ctrl.fcs" "INF0030_0_Ctrl.fcs" "INF0030_4_Ctrl.fcs"
+[133] "INF0030_9_Ctrl.fcs" "INF0013_0_PPD.fcs"  "INF0013_4_PPD.fcs"  "INF0013_9_PPD.fcs"  "INF0023_0_PPD.fcs"  "INF0023_4_PPD.fcs" 
+[139] "INF0023_9_PPD.fcs"  "INF0030_0_PPD.fcs"  "INF0030_4_PPD.fcs"  "INF0030_9_PPD.fcs"  "INF0013_0_SEB.fcs"  "INF0013_4_SEB.fcs" 
+[145] "INF0013_9_SEB.fcs"  "INF0023_0_SEB.fcs"  "INF0023_4_SEB.fcs"  "INF0023_9_SEB.fcs"  "INF0030_0_SEB.fcs"  "INF0030_4_SEB.fcs" 
+[151] "INF0030_9_SEB.fcs"  "INF0166_0_Ctrl.fcs" "INF0166_4_Ctrl.fcs" "INF0166_9_Ctrl.fcs" "INF0199_0_Ctrl.fcs" "INF0199_4_Ctrl.fcs"
+[157] "INF0199_9_Ctrl.fcs" "INF0207_0_Ctrl.fcs" "INF0207_4_Ctrl.fcs" "INF0207_9_Ctrl.fcs" "INF0166_0_PPD.fcs"  "INF0166_4_PPD.fcs" 
+[163] "INF0166_9_PPD.fcs"  "INF0199_0_PPD.fcs"  "INF0199_4_PPD.fcs"  "INF0199_9_PPD.fcs"  "INF0207_0_PPD.fcs"  "INF0207_4_PPD.fcs" 
+[169] "INF0207_9_PPD.fcs"  "INF0166_0_SEB.fcs"  "INF0166_4_SEB.fcs"  "INF0166_9_SEB.fcs"  "INF0199_0_SEB.fcs"  "INF0199_4_SEB.fcs" 
+[175] "INF0199_9_SEB.fcs"  "INF0207_0_SEB.fcs"  "INF0207_4_SEB.fcs"  "INF0207_9_SEB.fcs"  "INF0614_0_Ctrl.fcs" "INF0614_4_Ctrl.fcs"
+[181] "INF0614_9_Ctrl.fcs" "INF0622_0_Ctrl.fcs" "INF0622_9_Ctrl.fcs" "INF0627_9_Ctrl.fcs" "INF0614_0_PPD.fcs"  "INF0614_4_PPD.fcs" 
+[187] "INF0614_9_PPD.fcs"  "INF0622_0_PPD.fcs"  "INF0622_4_PPD.fcs"  "INF0622_9_PPD.fcs"  "INF0627_4_PPD.fcs"  "INF0627_9_PPD.fcs" 
+[193] "INF0614_0_SEB.fcs"  "INF0622_0_SEB.fcs"  "INF0622_9_SEB.fcs"  "INF0627_9_SEB.fcs" 
+
+And we are going to ask if there are any duplicates:
+```{r}
+length(NewColumn) != length(unique(NewColumn))
+```
+[1] FALSE
+
+The answer is FALSE, so all values are unique.
