@@ -1,0 +1,94 @@
+---
+Title: "Gating sets_Homeworks"
+Author: "Macarena López-Mayorga"
+date: 2026-04-30
+format: html
+---
+# Problem 1
+First of all, we are going to indicate the file path of the fcs files:
+
+```{r}
+Folder <- file.path("C:/Users/Macarena/CytometryInR/course/05_GatingSets/data")
+fcs_files <- list.files(Folder, pattern=".fcs", full.names=TRUE)
+fcs_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF052_00_Ctrl.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF052_00_SEB.fcs" 
+[3] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF100_00_Ctrl.fcs"
+[4] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF100_00_SEB.fcs" 
+[5] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF179_00_Ctrl.fcs"
+[6] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF179_00_SEB.fcs" 
+
+```{r}
+library(flowCore)
+```
+
+```{r}
+library(lobstr)
+library(flowWorkspace)
+```
+
+```{r}
+flowSet <- read.flowSet(files=fcs_files, truncate_max_range=FALSE, transformation=FALSE)
+flowSet
+```
+
+```{r}
+GatingSet1 <- GatingSet(flowSet)
+GatingSet1
+```
+
+```{r}
+library(CytoML)
+```
+
+```{r}
+Folder <- file.path("C:/Users/Macarena/CytometryInR/course/05_GatingSets/data")
+FlowJoWsp <- list.files(path=Folder, pattern=".wsp", full=TRUE)
+FlowJoWsp
+```
+
+```{r}
+OpenedWsp <- FlowJoWsp[stringr::str_detect(FlowJoWsp, "Opened")]
+OpenedWsp
+```
+
+```{r}
+ws <- open_flowjo_xml(OpenedWsp)
+ws
+```
+
+```{r}
+GS <- flowjo_to_gatingset(ws=ws, name=1, path=Folder, additional.keys="GROUPNAME")
+GS
+```
+
+```{r}
+library(bench)
+```
+
+```{r}
+Data <- gs_pop_get_count_fast(GS)
+head(Data, 5)
+```
+                 name                         Population                        Parent Count ParentCount
+               <char>                             <char>                        <char> <int>       <int>
+1: 00_Ctrl.fcs_INF052                           /Scatter                          root 10000       10000
+2: 00_Ctrl.fcs_INF052                  /Scatter/Singlets                      /Scatter  9986       10000
+3: 00_Ctrl.fcs_INF052             /Scatter/Singlets/Live             /Scatter/Singlets  9708        9986
+4: 00_Ctrl.fcs_INF052      /Scatter/Singlets/Live/Tcells        /Scatter/Singlets/Live  9708        9708
+5: 00_Ctrl.fcs_INF052 /Scatter/Singlets/Live/Tcells/CD4+ /Scatter/Singlets/Live/Tcells  6151        9708
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+TidyData <- Data |> mutate(Percent_Parent_Gate=(Count/ParentCount)*100)
+TidyData
+```
+
+```{r}
+TidyData <- TidyData |> mutate(Percent_Parent_Gate_rounded=round(Percent_Parent_Gate, 2))
+head(TidyData, 5)
+```
