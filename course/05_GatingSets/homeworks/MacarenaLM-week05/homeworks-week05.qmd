@@ -19,54 +19,59 @@ fcs_files
 [5] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF179_00_Ctrl.fcs"
 [6] "C:/Users/Macarena/CytometryInR/course/05_GatingSets/data/2025_07_26_AB_02_INF179_00_SEB.fcs" 
 
+I need to activate the packages that I am going to use:
 ```{r}
 library(flowCore)
-```
-
-```{r}
 library(lobstr)
 library(flowWorkspace)
 ```
 
+To read the 6 files:
 ```{r}
 flowSet <- read.flowSet(files=fcs_files, truncate_max_range=FALSE, transformation=FALSE)
 flowSet
 ```
 
+To stablish the GatingSet
 ```{r}
 GatingSet1 <- GatingSet(flowSet)
 GatingSet1
 ```
 
+Then, I need to call CytoML:
 ```{r}
 library(CytoML)
 ```
 
+  Then, we need to identify the FlowJo files:
 ```{r}
 Folder <- file.path("C:/Users/Macarena/CytometryInR/course/05_GatingSets/data")
 FlowJoWsp <- list.files(path=Folder, pattern=".wsp", full=TRUE)
 FlowJoWsp
 ```
 
+To select the file "opened":
 ```{r}
 OpenedWsp <- FlowJoWsp[stringr::str_detect(FlowJoWsp, "Opened")]
 OpenedWsp
 ```
-
+To set up the intermediate object:
 ```{r}
 ws <- open_flowjo_xml(OpenedWsp)
 ws
 ```
-
+To read from the FlowJo file to a GatingSet:
 ```{r}
 GS <- flowjo_to_gatingset(ws=ws, name=1, path=Folder, additional.keys="GROUPNAME")
 GS
 ```
 
+We need to activate bench package:
 ```{r}
 library(bench)
 ```
 
+To retrieve counts of cells within the individual gates:
 ```{r}
 Data <- gs_pop_get_count_fast(GS)
 head(Data, 5)
@@ -79,16 +84,236 @@ head(Data, 5)
 4: 00_Ctrl.fcs_INF052      /Scatter/Singlets/Live/Tcells        /Scatter/Singlets/Live  9708        9708
 5: 00_Ctrl.fcs_INF052 /Scatter/Singlets/Live/Tcells/CD4+ /Scatter/Singlets/Live/Tcells  6151        9708
 
+We need to activate dplyr to work in the Tidyverse:
 ```{r}
 library(dplyr)
 ```
 
+I include the percentage from the parent gate:
 ```{r}
 TidyData <- Data |> mutate(Percent_Parent_Gate=(Count/ParentCount)*100)
 TidyData
 ```
+                   name                                    Population                             Parent Count ParentCount
+                 <char>                                        <char>                             <char> <int>       <int>
+  1: 00_Ctrl.fcs_INF052                                      /Scatter                               root 10000       10000
+  2: 00_Ctrl.fcs_INF052                             /Scatter/Singlets                           /Scatter  9986       10000
+  3: 00_Ctrl.fcs_INF052                        /Scatter/Singlets/Live                  /Scatter/Singlets  9708        9986
+  4: 00_Ctrl.fcs_INF052                 /Scatter/Singlets/Live/Tcells             /Scatter/Singlets/Live  9708        9708
+  5: 00_Ctrl.fcs_INF052            /Scatter/Singlets/Live/Tcells/CD4+      /Scatter/Singlets/Live/Tcells  6151        9708
+ ---                                                                                                                      
+110:  00_SEB.fcs_INF179            /Scatter/Singlets/Live/Tcells/CD8+      /Scatter/Singlets/Live/Tcells  1871        9402
+111:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa+IFNg+ /Scatter/Singlets/Live/Tcells/CD8+     0        1871
+112:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa+IFNg- /Scatter/Singlets/Live/Tcells/CD8+     7        1871
+113:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa-IFNg+ /Scatter/Singlets/Live/Tcells/CD8+    20        1871
+114:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa-IFNg- /Scatter/Singlets/Live/Tcells/CD8+  1844        1871
+     Percent_Parent_Gate
+                   <num>
+  1:         100.0000000
+  2:          99.8600000
+  3:          97.2161025
+  4:         100.0000000
+  5:          63.3601154
+ ---                    
+110:          19.9000213
+111:           0.0000000
+112:           0.3741315
+113:           1.0689471
+114:          98.5569214
 
+I decided to rounded the values obtained:
 ```{r}
 TidyData <- TidyData |> mutate(Percent_Parent_Gate_rounded=round(Percent_Parent_Gate, 2))
 head(TidyData, 5)
+```
+                  name                                    Population                             Parent Count ParentCount
+                 <char>                                        <char>                             <char> <int>       <int>
+  1: 00_Ctrl.fcs_INF052                                      /Scatter                               root 10000       10000
+  2: 00_Ctrl.fcs_INF052                             /Scatter/Singlets                           /Scatter  9986       10000
+  3: 00_Ctrl.fcs_INF052                        /Scatter/Singlets/Live                  /Scatter/Singlets  9708        9986
+  4: 00_Ctrl.fcs_INF052                 /Scatter/Singlets/Live/Tcells             /Scatter/Singlets/Live  9708        9708
+  5: 00_Ctrl.fcs_INF052            /Scatter/Singlets/Live/Tcells/CD4+      /Scatter/Singlets/Live/Tcells  6151        9708
+ ---                                                                                                                      
+110:  00_SEB.fcs_INF179            /Scatter/Singlets/Live/Tcells/CD8+      /Scatter/Singlets/Live/Tcells  1871        9402
+111:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa+IFNg+ /Scatter/Singlets/Live/Tcells/CD8+     0        1871
+112:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa+IFNg- /Scatter/Singlets/Live/Tcells/CD8+     7        1871
+113:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa-IFNg+ /Scatter/Singlets/Live/Tcells/CD8+    20        1871
+114:  00_SEB.fcs_INF179 /Scatter/Singlets/Live/Tcells/CD8+/TNFa-IFNg- /Scatter/Singlets/Live/Tcells/CD8+  1844        1871
+     Percent_Parent_Gate
+                   <num>
+  1:         100.0000000
+  2:          99.8600000
+  3:          97.2161025
+  4:         100.0000000
+  5:          63.3601154
+ ---                    
+110:          19.9000213
+111:           0.0000000
+112:           0.3741315
+113:           1.0689471
+114:          98.5569214
+> TidyData <- TidyData |> mutate(Percent_Parent_Gate_rounded=round(Percent_Parent_Gate, 2))
++ head(TidyData, 5)
+                 name                         Population                        Parent Count ParentCount Percent_Parent_Gate
+               <char>                             <char>                        <char> <int>       <int>               <num>
+1: 00_Ctrl.fcs_INF052                           /Scatter                          root 10000       10000           100.00000
+2: 00_Ctrl.fcs_INF052                  /Scatter/Singlets                      /Scatter  9986       10000            99.86000
+3: 00_Ctrl.fcs_INF052             /Scatter/Singlets/Live             /Scatter/Singlets  9708        9986            97.21610
+4: 00_Ctrl.fcs_INF052      /Scatter/Singlets/Live/Tcells        /Scatter/Singlets/Live  9708        9708           100.00000
+5: 00_Ctrl.fcs_INF052 /Scatter/Singlets/Live/Tcells/CD4+ /Scatter/Singlets/Live/Tcells  6151        9708            63.36012
+   Percent_Parent_Gate_rounded
+                         <num>
+1:                      100.00
+2:                       99.86
+3:                       97.22
+4:                      100.00
+5:                       63.36
+
+And now, I removed the previous column no rounded:
+```{r}
+TidyData <- TidyData |> select (!Percent_Parent_Gate)
+head (TidyData, 5)
+```
+                 name                         Population                        Parent Count ParentCount Percent_Parent_Gate_rounded
+               <char>                             <char>                        <char> <int>       <int>                       <num>
+1: 00_Ctrl.fcs_INF052                           /Scatter                          root 10000       10000                      100.00
+2: 00_Ctrl.fcs_INF052                  /Scatter/Singlets                      /Scatter  9986       10000                       99.86
+3: 00_Ctrl.fcs_INF052             /Scatter/Singlets/Live             /Scatter/Singlets  9708        9986                       97.22
+4: 00_Ctrl.fcs_INF052      /Scatter/Singlets/Live/Tcells        /Scatter/Singlets/Live  9708        9708                      100.00
+5: 00_Ctrl.fcs_INF052 /Scatter/Singlets/Live/Tcells/CD4+ /Scatter/Singlets/Live/Tcells  6151        9708                       63.36
+
+# Problem 2:
+Instead of removing the files from data folder, I decided to move a couple of them to my folder, inside of the homeworks folder:
+
+```{r}
+GS <- flowjo_to_gatingset(ws=ws, name=1, path=Folder)
+```
+
+Error:
+! Multiple FCS files match sample 00_Ctrl.fcs by filename, event count, and keywords.
+Candidates are: 
+C:\Users\Macarena\CytometryInR\course\05_GatingSets\data\2025_07_26_AB_02_INF100_00_Ctrl.fcs
+C:\Users\Macarena\CytometryInR\course\05_GatingSets\data\2025_07_26_AB_02_INF179_00_Ctrl.fcs
+Please move incorrect files out of this directory or its subdirectories.
+Show Traceback
+
+This is the same error reported with the 6 files. Let's try with "additional.keys" as GROUPNAME:
+
+```{r}
+GS <- flowjo_to_gatingset(ws=ws, name=1, path=Folder, additional.keys="GROUPNAME")
+GS
+```
+FCS not found for sample 00_Ctrl.fcs_INF052 from searching the file extension: .fcs
+FCS not found for sample 00_SEB.fcs_INF052 from searching the file extension: .fcs
+A GatingSet with 4 samples
+
+It is not an error, but tell us that 2 files are missed.
+
+# Problem 3:
+To see the different population cells:
+```{r}
+ Data <- gs_pop_get_count_fast(GS)
+ Data
+```
+
+Then, we need to load ggplot2 and ggcyto:
+
+```{r}
+library(ggplot2)
+library(ggcyto)
+```
+
+```{r}
+ggcyto(GS[1], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=125)
+```
+
+```{r}
+ggcyto(GS[1], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=125)
+```
+```{r}
+ggcyto(GS[1], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=130)
+```
+
+```{r}
+ggcyto(GS[1], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=105)
+```
+
+```{r}
+ggcyto(GS[2], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[2], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[2], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=120)
+```
+
+```{r}
+ggcyto(GS[2], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=105)
+```
+
+```{r}
+ggcyto(GS[3], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=100)
+```
+
+```{r}
+ggcyto(GS[3], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[3], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[3], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=90)
+```
+
+```{r}
+ggcyto(GS[4], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=115)    
+```
+
+```{r}
+ggcyto(GS[4], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[4], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=130)
+```
+
+```{r}
+ggcyto(GS[4], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=90)
+```
+
+```{r}
+ggcyto(GS[5], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=115)    
+```
+
+```{r}
+ggcyto(GS[5], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=100)
+```
+
+```{r}
+ggcyto(GS[5], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=130)
+```
+
+```{r}
+ggcyto(GS[5], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=110)
+```
+
+```{r}
+ggcyto(GS[6], subset="root", aes(x="IFNg", y="TNFa")) + geom_hex(bins=135)    
+```
+
+```{r}
+ggcyto(GS[6], subset="Tcells", aes(x="IFNg", y="TNFa")) + geom_hex(bins=120)
+```
+
+```{r}
+ggcyto(GS[6], subset="CD4+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=130)
+```
+
+```{r}
+ggcyto(GS[6], subset="CD8+", aes(x="IFNg", y="TNFa")) + geom_hex(bins=120)
 ```
