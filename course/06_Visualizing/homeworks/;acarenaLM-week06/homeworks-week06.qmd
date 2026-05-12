@@ -1,0 +1,209 @@
+---
+Title: "week06_Visualizing with ggplot2"
+Author: "Macarena López-Mayorga"
+date: 2026-05-11
+format: html
+---
+# Problem 1
+
+We load the dplyr package
+```{r}
+library(dplyr)
+```
+
+Then, indicate the location of the file and read it:
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data")
+StorageLocation
+```
+[1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data"
+
+```{r}
+CSVDocument <-list.files(StorageLocation, full.names=TRUE)
+CSVDocument
+```
+[1] "C:/Users/Macarena/CytometryInR/course/04_IntroToTidyverse/data/Dataset.csv"
+
+```{r}
+Data <- read.csv(CSVDocument, check.names=FALSE)
+head(Data, 3)
+```
+ bid timepoint Condition
+1 INF0052         0      Ctrl
+2 INF0100         0      Ctrl
+3 INF0100         4      Ctrl
+        Date infant_sex  ptype
+1 2025-07-26       Male HEU-hi
+2 2025-07-26       Male HEU-lo
+3 2025-07-26       Male HEU-lo
+     root singletsFSC singletsSSC
+1 2098368     1894070     1666179
+2 2020184     1791890     1697083
+3 1155040     1033320      875465
+  singletsSSCB      CD45 NotMonocytes
+1      1537396 0.5952943    0.8820349
+2      1579098 0.9106762    0.9052256
+3       845446 0.9705765    0.9845400
+  nonDebris lymphocytes      live
+1 0.8627649   0.6420138 0.9020581
+2 0.8602660   0.2145848 0.8908981
+3 0.9578793   0.7403110 0.8757665
+       Dump+     Dump-    Tcells
+1 0.21090996 0.6911482 0.2804264
+2 0.06252775 0.8283703 0.6748298
+3 0.20023803 0.6755285 0.6119129
+         Vd2+      Vd2-     Va7.2+
+1 0.008120361 0.9918796 0.01448070
+2 0.007265620 0.9927344 0.01577499
+3 0.004651313 0.9953487 0.01579402
+     Va7.2-      CD4+      CD4-
+1 0.9773989 0.6341164 0.3432825
+2 0.9769594 0.6119112 0.3650482
+3 0.9795547 0.6639621 0.3155925
+       CD8+       CD8- Tcells_count
+1 0.2734826 0.06979990       164771
+2 0.3357696 0.02927858       208241
+3 0.2862104 0.02938209       371723
+  lymphocytes_count  Monocytes
+1            587573 0.11796509
+2            308583 0.09477437
+3            607477 0.01545999
+      Debris CD45_count
+1 0.13723513     915203
+2 0.13973396    1438047
+3 0.04212072     820570
+
+We check the type of value of "Condition" column
+```{r}
+str(Data)
+```
+
+Condition is a character value. Let's to make that R consider "Condition" as categorical value:
+
+```{r}
+Data1 <- Data
+Data1$Condition <- factor(Data1$Condition)
+str(Data1[,1:3])
+```
+'data.frame':	196 obs. of  3 variables:
+ $ bid      : chr  "INF0052" "INF0100" "INF0100" "INF0100" ...
+ $ timepoint: int  0 0 4 9 0 4 9 4 9 0 ...
+ $ Condition: Factor w/ 3 levels "Ctrl","PPD","SEB": 1 1 1 1 1 1 1 1 1 2 ...
+
+ Then, we should transform the TcellProportion column to TCellFrequency and convert to a factor:
+ 
+ ```{r}
+ Data <- Data |> mutate(TcellProportion=Tcells_count/CD45_count) |> mutate (TcellFrequency=TcellProportion*100) |> mutate(TcellFrequency=round(TcellFrequency, 1))
+ Data$Condition <- factor(Data$Condition)
+ ```
+ 
+ We should activate ggplot2 package:
+ ```{r}
+ library(ggplot2)
+ ```
+ 
+ We are going to draw some few layers first:
+ ```{r}
+ Plot <- ggplot(Data)
+ Plot
+ ```
+ 
+
+ 
+ ```{r}
+Plot <- ggplot(Data) + aes(x=Condition, y=TcellFrequency)
+Plot
+ ```
+ 
+
+Next, we load in ggbeeswarm package
+ ```{r}
+ library(ggbeeswarm)
+ ```
+
+This is how looks the beeswarm style boxplot:
+```{r}
+Plot <- ggplot(Data) + aes(x=Condition, y=TcellFrequency) + geom_boxplot() + geom_beeswarm(size=2.5, cex=2.5)
+Plot
+```
+Now we are going to introduce the sex variable and we have to define symbols and fill:
+```{r}
+Data |> pull(infant_sex) |> unique()
+```
+
+```{r}
+shape_sex <- c("Female"=22, "Male"=21)
+fill_sex <- c("Female"="white", "Male"="black")
+```
+And this is our final plot:
+```{r}
+ggplot(Data) + aes(x=Condition, y=TcellFrequency) + geom_boxplot() + geom_beeswarm(size=2.5, cex=2.5, aes(shape=infant_sex, fill=infant_sex)) + scale_shape_manual(values=shape_sex) + scale_fill_manual(values=fill_sex) + theme(panel.grid.major=element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle=45, hjust=1, size=12), axis.text.y=element_text(size=12))
+```
+
+let's change the order of x-axis:
+
+```{r}
+Data$Condition <- factor(Data$Condition, levels = c("SEB", "PPD", "Ctrl"))
+```
+And this is how looks:
+```{r}
+ggplot(Data) + aes(x=Condition, y=TcellFrequency) + geom_boxplot() + geom_beeswarm(size=2.5, cex=2.5, aes(shape=infant_sex, fill=infant_sex)) + scale_shape_manual(values=shape_sex) + scale_fill_manual(values=fill_sex) + theme(panel.grid.major=element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle=45, hjust=1, size=12), axis.text.y=element_text(size=12))
+```
+
+# Problem 2
+
+We need to load in CytoML and ggcyto packages
+```{r}
+library(CytoML)
+library(ggcyto)
+```
+
+Assign the location of the files
+```{r}
+Folder <- file.path("C:/Users/Macarena/CytometryInR/course/05_GatingSets/data")
+Folder
+```
+
+We want to localize the .wps files
+```{r}
+FlowJoWsp <- list.files(path=Folder, pattern=".wsp", full=TRUE)
+FlowJoWsp
+```
+ And now, we select the file named as "opened"
+```{r}
+ThisWorkspace <- FlowJoWsp [stringr::str_detect(FlowJoWsp, "Opened")]
+ThisWorkspace
+```
+
+Next, we set up the workspace
+```{r}
+ws <- open_flowjo_xml(ThisWorkspace)
+ws
+```
+And the GatingSet
+```{r}
+gs <- flowjo_to_gatingset(ws=ws, name=1, path=Folder, additional.keys="GROUPNAME")
+gs
+```
+And we stablish what we want to represent in the plot
+```{r}
+Plot <- ggcyto(gs[6], subset="Tcells", aes(x="CD8", y="CD4")) + geom_hex(bins=200)
+```
+And I add some little adjustments: plot title bigger ("size" and face is for indicate the bold style) and in the centre of the plot (hjust) and I remove the grid:
+
+```{r}
+Plot + theme_bw() + theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5), panel.grid = element_blank())
+```
+![]("C:/Users/Macarena/CytometryInR/course/06_Visualizing/homeworks/MacarenaLM-week06/cytometry plot.png")
+
+# Problem 3
+
+```{r}
+Data <- Data
+Data$timepoint <- factor(Data$timepoint)
+str(Data[,1:3])
+```
+
+```{r}
+ggplot(Data, aes(x = timepoint, fill = "pink")) + 
+```
