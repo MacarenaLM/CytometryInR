@@ -197,13 +197,19 @@ Plot + theme_bw() + theme(plot.title = element_text(size = 16, face = "bold", hj
 ![]("C:/Users/Macarena/CytometryInR/course/06_Visualizing/homeworks/MacarenaLM-week06/cytometry plot.png")
 
 # Problem 3
-
+Now, I am going to use timepoint to do the geom_density plot. For that, I am going to convert timepoint into a factor:
 ```{r}
 Data <- Data
 Data$timepoint <- factor(Data$timepoint)
 str(Data[,1:3])
 ```
-
+Now, I specify that is timepoint what I want to represent in x-axis. With "color", I defined the color of the line. Alpha is the grade of transparency and then, I stablish one color for each value:
 ```{r}
-ggplot(Data, aes(x = timepoint, fill = "pink")) + 
+ggplot(Data, aes(x = timepoint, fill = timepoint)) +
+  geom_density(alpha = 0.4, color="grey") +
+  scale_fill_manual(values = c(
+    "0" = "red",
+    "4" = "blue",
+    "9" = "green"
+  ))
 ```
