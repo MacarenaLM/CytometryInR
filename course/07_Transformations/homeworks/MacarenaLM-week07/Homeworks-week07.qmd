@@ -1,0 +1,135 @@
+---
+Title: "week07-Applying Transformations"
+Author: "Macarena López-Mayorga"
+date: 2026-05-27
+format: html
+---
+First of all, I am going to load in flowWorkspace and ggcyto packages:
+
+```{r}
+library(flowWorkspace)
+library(ggcyto)
+library(dplyr)
+library(stringr)
+```
+Now, I have to indicate the file path and the files that I am going to use (I am going to use just the fcs files)
+
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/07_Transformations/data")
+fcs_files <- list.files(StorageLocation, ".fcs", full.names=TRUE)
+SFC_files <- fcs_files[stringr::str_detect(fcs_files, "2025")]
+```
+
+```{r}
+SFC_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF052_00_Ctrl.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF052_00_SEB.fcs" 
+[3] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF100_00_Ctrl.fcs"
+[4] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF100_00_SEB.fcs" 
+[5] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF179_00_Ctrl.fcs"
+[6] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/2025_07_26_AB_02_INF179_00_SEB.fcs" 
+
+Next, I'm going to list the transformer objects
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+SFC_GatingSet
+```
+A GatingSet with 6 samples
+
+And I'm going to apply transformers
+
+```{r}
+Logicle <- logicle_trans()
+str(Logicle)
+```
+List of 9
+ $ name        : chr "logicle"
+ $ transform   :function (x)  
+ $ inverse     :function (x)  
+ $ d_transform : NULL
+ $ d_inverse   : NULL
+ $ breaks      :function (x)  
+ $ minor_breaks:function (b, limits, n)  
+ $ format      :function (x)  
+ $ domain      : num [1:2] -Inf Inf
+ - attr(*, "class")= chr "transform"
+ 
+ ```{r}
+ Biexponential <- flowjo_biexp_trans()
+ str(Biexponential)
+ ```
+ List of 9
+ $ name        : chr "flowJo_biexp"
+ $ transform   :function (x, deriv = 0)  
+  ..- attr(*, "type")= chr "biexp"
+  ..- attr(*, "parameters")=List of 5
+  .. ..$ channelRange: int 4096
+  .. ..$ maxValue    : num 262144
+  .. ..$ neg         : num 0
+  .. ..$ pos         : num 4.5
+  .. ..$ widthBasis  : num -10
+ $ inverse     :function (x, deriv = 0)  
+  ..- attr(*, "type")= chr "biexp"
+  ..- attr(*, "parameters")=List of 5
+  .. ..$ channelRange: int 4096
+  .. ..$ maxValue    : num 262144
+  .. ..$ neg         : num 0
+  .. ..$ pos         : num 4.5
+  .. ..$ widthBasis  : num -10
+ $ d_transform : NULL
+ $ d_inverse   : NULL
+ $ breaks      :function (x)  
+ $ minor_breaks:function (b, limits, n)  
+ $ format      :function (x)  
+ $ domain      : num [1:2] -Inf Inf
+ - attr(*, "class")= chr "transform"
+ 
+ ```{r}
+ Asinh <- flowjo_fasinh_trans()
+ str(Asinh)
+ ```
+ List of 9
+ $ name        : chr "flowJo_fasinh"
+ $ transform   :function (x)  
+ $ inverse     :function (x)  
+ $ d_transform : NULL
+ $ d_inverse   : NULL
+ $ breaks      :function (x)  
+ $ minor_breaks:function (b, limits, n)  
+ $ format      :function (x)  
+ $ domain      : num [1:2] -Inf Inf
+ - attr(*, "class")= chr "transform"
+ 
+ ```{r}
+ AsinhGML <- asinhtGml2_trans()
+ str(AsinhGML)
+ ```
+ List of 9
+ $ name        : chr "asinhtGml2"
+ $ transform   :function (x)  
+ $ inverse     :function (x)  
+ $ d_transform : NULL
+ $ d_inverse   : NULL
+ $ breaks      :function (x)  
+ $ minor_breaks:function (b, limits, n)  
+ $ format      :function (x)  
+ $ domain      : num [1:2] -Inf Inf
+ - attr(*, "class")= chr "transform"
+ 
+ To be sure that what we have to transform:
+ ```{r}
+ SFC_Parameters <- colnames(SFC_GatingSet)
+ SFC_Parameters
+ ```
+  [1] "Time"              "SSC-W"             "SSC-H"             "SSC-A"             "FSC-W"             "FSC-H"             "FSC-A"             "SSC-B-W"          
+ [9] "SSC-B-H"           "SSC-B-A"           "BUV395-A"          "BUV563-A"          "BUV615-A"          "BUV661-A"          "BUV737-A"          "BUV805-A"         
+[17] "Pacific Blue-A"    "BV480-A"           "BV570-A"           "BV605-A"           "BV650-A"           "BV711-A"           "BV750-A"           "BV786-A"          
+[25] "Alexa Fluor 488-A" "Spark Blue 550-A"  "Spark Blue 574-A"  "RB613-A"           "RB705-A"           "RB780-A"           "PE-A"              "PE-Dazzle594-A"   
+[33] "PE-Cy5-A"          "PE-Fire 700-A"     "PE-Fire 744-A"     "PE-Vio770-A"       "APC-A"             "Alexa Fluor 647-A" "APC-R700-A"        "Zombie NIR-A"     
+[41] "APC-Fire 750-A"    "APC-Fire 810-A"    "AF-A"   
+
+```{r}
+
+```
