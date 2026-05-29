@@ -130,6 +130,224 @@ List of 9
 [33] "PE-Cy5-A"          "PE-Fire 700-A"     "PE-Fire 744-A"     "PE-Vio770-A"       "APC-A"             "Alexa Fluor 647-A" "APC-R700-A"        "Zombie NIR-A"     
 [41] "APC-Fire 750-A"    "APC-Fire 810-A"    "AF-A"   
 
+I want to remove the column "Time"
 ```{r}
-
+FluorophoresAndMore <- SFC_Parameters[!stringr::str_detect(SFC_Parameters, "Time")]
+FluorophoresAndMore
 ```
+ Now, I'm going to use the transformerList() function
+```{r}
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+MyBiexTransform
+```
+$`SSC-W`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`SSC-H`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`SSC-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`FSC-W`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`FSC-H`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`FSC-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`SSC-B-W`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`SSC-B-H`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`SSC-B-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV395-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV563-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV615-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV661-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV737-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BUV805-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Pacific Blue-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV480-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV570-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV605-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV650-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV711-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV750-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`BV786-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Alexa Fluor 488-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Spark Blue 550-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Spark Blue 574-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`RB613-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`RB705-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`RB780-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-Dazzle594-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-Cy5-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-Fire 700-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-Fire 744-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`PE-Vio770-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`APC-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Alexa Fluor 647-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`APC-R700-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`Zombie NIR-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`APC-Fire 750-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`APC-Fire 810-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+$`AF-A`
+Transformer: flowJo_biexp [-Inf, Inf]
+
+attr(,"class")
+[1] "transformerList" "list"  
+
+Now, I want to check FSC-A especifically in this list:
+```{r}
+str(MyBiexTransform$`FSC-A`)
+```
+List of 9
+ $ name        : chr "flowJo_biexp"
+ $ transform   :function (x, deriv = 0)  
+  ..- attr(*, "type")= chr "biexp"
+  ..- attr(*, "parameters")=List of 5
+  .. ..$ channelRange: int 4096
+  .. ..$ maxValue    : num 262144
+  .. ..$ neg         : num 0
+  .. ..$ pos         : num 4.5
+  .. ..$ widthBasis  : num -10
+ $ inverse     :function (x, deriv = 0)  
+  ..- attr(*, "type")= chr "biexp"
+  ..- attr(*, "parameters")=List of 5
+  .. ..$ channelRange: int 4096
+  .. ..$ maxValue    : num 262144
+  .. ..$ neg         : num 0
+  .. ..$ pos         : num 4.5
+  .. ..$ widthBasis  : num -10
+ $ d_transform : NULL
+ $ d_inverse   : NULL
+ $ breaks      :function (x)  
+ $ minor_breaks:function (b, limits, n)  
+ $ format      :function (x)  
+ $ domain      : num [1:2] -Inf Inf
+ - attr(*, "class")= chr "transform"
+
+Next, I have to apply the list to the GatingSet
+```{r}
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+I am going to plot the FSC-A and SSC-A to see what happens...
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="FSC-A", y="SSC-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 FSC-SSC.png)
+
+I see... nothing, the x and y axis are still in linear format, I don't know why.
+
+# Problem 2
+Let's visualize the same fluorophores that we follow during the course:
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 default.png)
+
+Let's change width
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 width.png)
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+
