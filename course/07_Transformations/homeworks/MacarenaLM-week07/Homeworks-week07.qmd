@@ -338,10 +338,26 @@ ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_h
 ```
 ![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 width.png)
 
+Now, a higher channelRange:
 ```{r}
 SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
 SFC_GatingSet <- GatingSet(SFC_cytoset)
-Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=0, widthBasis=-500)
+Biexponential <- flowjo_biexp_trans(channelRange=10000, maxValue=262144, pos=4.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 channelRangeplus.png)
+
+A lower channelRange:
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=2000, maxValue=262144, pos=4.5, neg=0, widthBasis=-500)
 MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
 transform(SFC_GatingSet, MyBiexTransform)
 ```
@@ -351,3 +367,269 @@ A GatingSet with 6 samples
 ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
 ```
 
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 channelRangeminus.png)
+
+Let's keep the default channelRange value and put a higher one for maxValue:
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=50000, pos=4.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 maxValueplus.png)
+
+Now, a lower value:
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=10000, pos=4.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 maxValueminus.png)
+
+Next, let's modify the pos value (higher one):
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=5.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 poshigher.png)
+
+Let's try with a lower pos value
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=3.5, neg=0, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 posminus.png)
+
+Keeping pos value in default, let's test with a higher neg value:
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 negHigher.png)
+
+What about a negative value in neg? Let's try:
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=-2, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 negMinus.png)
+
+Let's keep neg as 2 with a widthBasis in -500. The rest of parameters keep as default.
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 BiexpFinal.png)
+
+Other transformer: Logicle
+
+```{r}
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+MyBiexTransform
+```
+$`SSC-W`
+Transformer: logicle [-Inf, Inf]
+
+$`SSC-H`
+Transformer: logicle [-Inf, Inf]
+
+$`SSC-A`
+Transformer: logicle [-Inf, Inf]
+
+$`FSC-W`
+Transformer: logicle [-Inf, Inf]
+
+$`FSC-H`
+Transformer: logicle [-Inf, Inf]
+
+$`FSC-A`
+Transformer: logicle [-Inf, Inf]
+
+$`SSC-B-W`
+Transformer: logicle [-Inf, Inf]
+
+$`SSC-B-H`
+Transformer: logicle [-Inf, Inf]
+
+$`SSC-B-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV395-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV563-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV615-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV661-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV737-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BUV805-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Pacific Blue-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV480-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV570-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV605-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV650-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV711-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV750-A`
+Transformer: logicle [-Inf, Inf]
+
+$`BV786-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Alexa Fluor 488-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Spark Blue 550-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Spark Blue 574-A`
+Transformer: logicle [-Inf, Inf]
+
+$`RB613-A`
+Transformer: logicle [-Inf, Inf]
+
+$`RB705-A`
+Transformer: logicle [-Inf, Inf]
+
+$`RB780-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-Dazzle594-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-Cy5-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-Fire 700-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-Fire 744-A`
+Transformer: logicle [-Inf, Inf]
+
+$`PE-Vio770-A`
+Transformer: logicle [-Inf, Inf]
+
+$`APC-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Alexa Fluor 647-A`
+Transformer: logicle [-Inf, Inf]
+
+$`APC-R700-A`
+Transformer: logicle [-Inf, Inf]
+
+$`Zombie NIR-A`
+Transformer: logicle [-Inf, Inf]
+
+$`APC-Fire 750-A`
+Transformer: logicle [-Inf, Inf]
+
+$`APC-Fire 810-A`
+Transformer: logicle [-Inf, Inf]
+
+$`AF-A`
+Transformer: logicle [-Inf, Inf]
+
+attr(,"class")
+[1] "transformerList" "list"       
+
+```{r}
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+Plotting without any arguments provided:
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 Logicle_nochanges.png)
+
+```{r}
+?logicle_trans
+```
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(..., n=6, equal.space=FALSE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
