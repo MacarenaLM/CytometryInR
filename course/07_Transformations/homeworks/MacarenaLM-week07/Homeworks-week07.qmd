@@ -615,21 +615,190 @@ transform(SFC_GatingSet, MyBiexTransform)
 ```
 A GatingSet with 6 samples
 
-Plotting without any arguments provided:
-
-```{r}
-ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
-```
-![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 Logicle_nochanges.png)
-
+Let's investigate how works this function:
 ```{r}
 ?logicle_trans
 ```
 
+Now, I'm going to stablish the GatingSet with the default settings:
 ```{r}
 SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
 SFC_GatingSet <- GatingSet(SFC_cytoset)
-Logicle <- logicle_trans(..., n=6, equal.space=FALSE)
+Logicle <- logicle_trans(FluorophoresAndMore, n=6, equal.space=FALSE)
 MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
 transform(SFC_GatingSet, MyBiexTransform)
 ```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 LogicleDefault.png)
+
+Next, let's change equal.space to TRUE:
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(FluorophoresAndMore, n=6, equal.space=TRUE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 EqSpaceTRUE.png)
+
+And now, I am also applying a change in n (lower value)
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(FluorophoresAndMore, n=2, equal.space=TRUE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 EqSpaceTRUE-n2.png)
+
+What about a higher n value?
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(FluorophoresAndMore, n=10, equal.space=TRUE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 EqSpaceTRUE-n10.png)
+
+Let's try with equal.space in FALSE and with a low n value:
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(FluorophoresAndMore, n=2, equal.space=FALSE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 n2.png)
+
+And now, a higher n value
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(SFC_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+Logicle <- logicle_trans(FluorophoresAndMore, n=10, equal.space=FALSE)
+MyBiexTransform <- transformerList(FluorophoresAndMore, Logicle)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+```{r}
+ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 n10.png)
+
+So, it seems that Logicle transformation is not good for this plot, independently of settings.
+
+# Problem 3
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/07_Transformations/data")
+fcs_files <- list.files(StorageLocation, ".fcs", full.names=TRUE)
+MC_files <- fcs_files[stringr::str_detect(fcs_files, "G1_2")]
+```
+
+```{r}
+MC_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/G1_2_concatenated.txt_m039A.1147901.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/G1_2_concatenated.txt_m039B.1147889.fcs"
+[3] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/G1_2_concatenated.txt_m039C.1147913.fcs"
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+MC_GatingSet
+```
+A GatingSet with 3 samples
+
+I need to check the names for the metal tags:
+
+```{r}
+colnames(MC_GatingSet)
+```
+ [1] "Ce140Di"      "Ce142Di"      "Dy161Di"      "Dy162Di"      "Dy163Di"      "Dy164Di"      "Er166Di"      "Er167Di"      "Er168Di"      "Er170Di"     
+[11] "Eu151Di"      "Eu153Di"      "Event_length" "Gd155Di"      "Gd156Di"      "Gd158Di"      "Gd160Di"      "Ho165Di"      "Ir191Di"      "Ir193Di"     
+[21] "Lu175Di"      "Lu176Di"      "Nd142Di"      "Nd143Di"      "Nd144Di"      "Nd145Di"      "Nd146Di"      "Nd148Di"      "Nd150Di"      "Pd102Di"     
+[31] "Pd104Di"      "Pd105Di"      "Pd106Di"      "Pd108Di"      "Pd110Di"      "Pr141Di"      "Pt195Di"      "Sm147Di"      "Sm149Di"      "Sm152Di"     
+[41] "Sm154Di"      "Tb159Di"      "Tm169Di"      "Y89Di"        "Yb171Di"      "Yb172Di"      "Yb173Di"      "Yb174Di"      "Yb176Di"      "Time"  
+
+And the markers associated with each:
+
+```{r}
+markernames(MC_GatingSet)
+```
+               Ce140Di                Ce142Di                Dy161Di                Dy162Di                Dy163Di                Dy164Di 
+               "Beads"                "Beads"   "H2BK120Ub-macroH2A"    "CrotonylK-H3K4me3"        "H3R2cit-H2A.Z"     "H3K14ac-H3K36me1" 
+               Er166Di                Er167Di                Er168Di                Er170Di                Eu151Di                Eu153Di 
+                "CD33"                 "CD16"     "H4K16ac-H4K20me1"                  "CD3"     "H3K23ac-H3K27me1"    "H2BS14ph-H3K36me2" 
+               Gd155Di                Gd156Di                Gd158Di                Gd160Di                Ho165Di                Ir191Di 
+               "CD11c"     "H3K18ac-H4K20me2"         "H3K56ac-H3.3"       "PADI4-H4K20me3"     "H33Xcit-H3K27me3"                  "DNA" 
+               Ir193Di                Lu175Di                Lu176Di                Nd142Di                Nd143Di                Nd144Di 
+                 "DNA"                 "CD19"                "beads"       "gammaH2AX-Rme1"      "H2BK5ac-Rme2sym"      "H3S10ph-H3K4me2" 
+               Nd145Di                Nd146Di                Nd148Di                Nd150Di                Pd102Di                Pd104Di 
+                 "CD4"                  "CD8"                 "CD34"   "H3.3S31ph-H3K36me3"              "Barcode"              "Barcode" 
+               Pd105Di                Pd106Di                Pd108Di                Pd110Di                Pr141Di                Pt195Di 
+             "Barcode"              "Barcode"              "Barcode"              "Barcode"                   "H3"             "livedead" 
+               Sm147Di                Sm149Di                Sm152Di                Sm154Di                Tb159Di                Tm169Di 
+      "H4K5ac-H3K9me2" "CleavedH3T22-H3K9me1"       "H3K9ac-Rme2asy"   "H2AK119Ub-H3K27me2"                 "CD14"                "CD123" 
+                 Y89Di                Yb171Di                Yb172Di                Yb173Di                Yb174Di                Yb176Di 
+                "CD45"                 "CD38"                 "CD56"                   "H4"        "H3K27ac-CENPA"                "HLADR" 
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 MC Default.png)
+
+```{r}
+MC_Parameters <- markernames(MC_GatingSet)
+MC_MarkersInterest <- MC_Parameters[!str_detect("Barcode|Beads", MC_Parameters)]
+MC_MarkersInterest
+```
+               Dy161Di                Dy162Di                Dy163Di                Dy164Di                Er166Di                Er167Di 
+  "H2BK120Ub-macroH2A"    "CrotonylK-H3K4me3"        "H3R2cit-H2A.Z"     "H3K14ac-H3K36me1"                 "CD33"                 "CD16" 
+               Er168Di                Er170Di                Eu151Di                Eu153Di                Gd155Di                Gd156Di 
+    "H4K16ac-H4K20me1"                  "CD3"     "H3K23ac-H3K27me1"    "H2BS14ph-H3K36me2"                "CD11c"     "H3K18ac-H4K20me2" 
+               Gd158Di                Gd160Di                Ho165Di                Ir191Di                Ir193Di                Lu175Di 
+        "H3K56ac-H3.3"       "PADI4-H4K20me3"     "H33Xcit-H3K27me3"                  "DNA"                  "DNA"                 "CD19" 
+               Lu176Di                Nd142Di                Nd143Di                Nd144Di                Nd145Di                Nd146Di 
+               "beads"       "gammaH2AX-Rme1"      "H2BK5ac-Rme2sym"      "H3S10ph-H3K4me2"                  "CD4"                  "CD8" 
+               Nd148Di                Nd150Di                Pr141Di                Pt195Di                Sm147Di                Sm149Di 
+                "CD34"   "H3.3S31ph-H3K36me3"                   "H3"             "livedead"       "H4K5ac-H3K9me2" "CleavedH3T22-H3K9me1" 
+               Sm152Di                Sm154Di                Tb159Di                Tm169Di                  Y89Di                Yb171Di 
+      "H3K9ac-Rme2asy"   "H2AK119Ub-H3K27me2"                 "CD14"                "CD123"                 "CD45"                 "CD38" 
+               Yb172Di                Yb173Di                Yb174Di                Yb176Di 
+                "CD56"                   "H4"        "H3K27ac-CENPA"                "HLADR" 
+
+
+```{r}
+InterestingMetalsOnly <- names(MC_MarkersInterest)
+InterestingMetalsOnly
+```
+ [1] "Dy161Di" "Dy162Di" "Dy163Di" "Dy164Di" "Er166Di" "Er167Di" "Er168Di" "Er170Di" "Eu151Di" "Eu153Di" "Gd155Di" "Gd156Di" "Gd158Di" "Gd160Di" "Ho165Di"
+[16] "Ir191Di" "Ir193Di" "Lu175Di" "Lu176Di" "Nd142Di" "Nd143Di" "Nd144Di" "Nd145Di" "Nd146Di" "Nd148Di" "Nd150Di" "Pr141Di" "Pt195Di" "Sm147Di" "Sm149Di"
+[31] "Sm152Di" "Sm154Di" "Tb159Di" "Tm169Di" "Y89Di"   "Yb171Di" "Yb172Di" "Yb173Di" "Yb174Di" "Yb176Di"
+
