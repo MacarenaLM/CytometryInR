@@ -715,6 +715,8 @@ ggcyto(SFC_GatingSet[6], subset="root", aes(x="BUV805-A", y="BV650-A")) + geom_h
 So, it seems that Logicle transformation is not good for this plot, independently of settings.
 
 # Problem 3
+
+I am going to locate the files:
 ```{r}
 StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/07_Transformations/data")
 fcs_files <- list.files(StorageLocation, ".fcs", full.names=TRUE)
@@ -728,6 +730,7 @@ MC_files
 [2] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/G1_2_concatenated.txt_m039B.1147889.fcs"
 [3] "C:/Users/Macarena/CytometryInR/course/07_Transformations/data/G1_2_concatenated.txt_m039C.1147913.fcs"
 
+Stablishing the GatingSet:
 ```{r}
 MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
 MC_GatingSet <- GatingSet(MC_cytoset)
@@ -768,11 +771,13 @@ markernames(MC_GatingSet)
                  Y89Di                Yb171Di                Yb172Di                Yb173Di                Yb174Di                Yb176Di 
                 "CD45"                 "CD38"                 "CD56"                   "H4"        "H3K27ac-CENPA"                "HLADR" 
 
+Now, let's see the plot with the default settings
 ```{r}
 ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
 ```
 ![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 MC Default.png)
 
+Next, I'am going to remove the Barcode and Beads entries
 ```{r}
 MC_Parameters <- markernames(MC_GatingSet)
 MC_MarkersInterest <- MC_Parameters[!str_detect("Barcode|Beads", MC_Parameters)]
@@ -793,7 +798,7 @@ MC_MarkersInterest
                Yb172Di                Yb173Di                Yb174Di                Yb176Di 
                 "CD56"                   "H4"        "H3K27ac-CENPA"                "HLADR" 
 
-
+And we want the names...
 ```{r}
 InterestingMetalsOnly <- names(MC_MarkersInterest)
 InterestingMetalsOnly
@@ -801,4 +806,306 @@ InterestingMetalsOnly
  [1] "Dy161Di" "Dy162Di" "Dy163Di" "Dy164Di" "Er166Di" "Er167Di" "Er168Di" "Er170Di" "Eu151Di" "Eu153Di" "Gd155Di" "Gd156Di" "Gd158Di" "Gd160Di" "Ho165Di"
 [16] "Ir191Di" "Ir193Di" "Lu175Di" "Lu176Di" "Nd142Di" "Nd143Di" "Nd144Di" "Nd145Di" "Nd146Di" "Nd148Di" "Nd150Di" "Pr141Di" "Pt195Di" "Sm147Di" "Sm149Di"
 [31] "Sm152Di" "Sm154Di" "Tb159Di" "Tm169Di" "Y89Di"   "Yb171Di" "Yb172Di" "Yb173Di" "Yb174Di" "Yb176Di"
+
+Let's apply a transformer (Asinh):
+```{r}
+Asinh <- flowjo_fasinh_trans()
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+str(MyAsinhTransform[1:3])
+```
+List of 3
+ $ Dy161Di:List of 9
+  ..$ name        : chr "flowJo_fasinh"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+ $ Dy162Di:List of 9
+  ..$ name        : chr "flowJo_fasinh"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+ $ Dy163Di:List of 9
+  ..$ name        : chr "flowJo_fasinh"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+  
+  ```{r}
+transform(MC_GatingSet, MyAsinhTransform)
+  ```
+A GatingSet with 3 samples
+
+Let's replot:
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 Asinh 1.png)
+
+Now, let's try changing the default settings, starting with "m" (set it to 6):
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=6, t=12000, a=0.7, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 Asinh m6.png)
+
+And now we set it to 2:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=2, t=12000, a=0.7, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 Asinh m2.png)
+
+Let's change the t value now (set it to 25000)
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=25000, a=0.7, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh t25000.png)
+
+Let's decrease the value to 5000
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=5000, a=0.7, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh t5000.png)
+
+Next, we are going to increase the "a" to 1.5:
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=12000, a=1.5, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh ahigh.png)
+
+and decreased value (set it to -0.5)
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=12000, a=-0.5, length=256)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh alow.png)
+
+Finally, let's change the length value to 600:
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=12000, a=0.7, length=600)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh length high.png)
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+Asinh <- flowjo_fasinh_trans(m=4, t=12000, a=0.7, length=100)
+MyAsinhTransform <- transformerList(InterestingMetalsOnly, Asinh)
+transform(MC_GatingSet, MyAsinhTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinh length low.png)
+
+ It seems that the best plot, with the most discriminated populations is the one with m set it to 6 (file named as ggplot2 Asinh m6). 
+ The other method:
+ 
+ ```{r}
+ AsinhGML <- asinhtGml2_trans()
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+str(MyAsinhTransform2[1:3])
+ ```
+ $ Dy161Di:List of 9
+  ..$ name        : chr "asinhtGml2"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+ $ Dy162Di:List of 9
+  ..$ name        : chr "asinhtGml2"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+ $ Dy163Di:List of 9
+  ..$ name        : chr "asinhtGml2"
+  ..$ transform   :function (x)  
+  ..$ inverse     :function (x)  
+  ..$ d_transform : NULL
+  ..$ d_inverse   : NULL
+  ..$ breaks      :function (x)  
+  ..$ minor_breaks:function (b, limits, n)  
+  ..$ format      :function (x)  
+  ..$ domain      : num [1:2] -Inf Inf
+  ..- attr(*, "class")= chr "transform"
+  
+  ```{r}
+transform(MC_GatingSet, MyAsinhTransform2)
+  ```
+  A GatingSet with 3 samples
+
+Let's plot again the previous markers:
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML default.png)
+
+```{r}
+?asinhtGml2_trans
+```
+
+These are the parameters with the default settings:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 0, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+Let's change the T parameter:
+
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 10000, M = 4.5, A = 0, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML T low.png)
+
+Let's increase it:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 40000, M = 4.5, A = 0, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+
+Now, the M:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 3, A = 0, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML Mlow.png)
+
+Next, M with a higher value
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 6, A = 0, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML M high.png)
 
