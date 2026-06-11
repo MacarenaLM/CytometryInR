@@ -1109,3 +1109,94 @@ ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex
 ```
 ![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML M high.png)
 
+Let's modify the A with a higher value:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 2, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML Ahigh.png)
+
+Now, with a lower value:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = -2, n=6, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML Alow.png)
+
+Let's change n to a lower value:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 0, n=3, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML nlow.png)
+
+And a higher value
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 0, n=9, equal.space=FALSE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML nhigh.png)
+
+I'm going to try changing equal.space to TRUE:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 0, n=6, equal.space=TRUE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML TRUE.png)
+
+And equal.space TRUE with a higher value of n:
+```{r}
+MC_cytoset <- load_cytoset_from_fcs(MC_files, truncate_max_range=FALSE, transformation=FALSE)
+MC_GatingSet <- GatingSet(MC_cytoset)
+AsinhGML <- asinhtGml2_trans(T = 262144, M = 4.5, A = 0, n=9, equal.space=TRUE)
+MyAsinhTransform2 <- transformerList(InterestingMetalsOnly, AsinhGML)
+transform(MC_GatingSet, MyAsinhTransform2)
+```
+A GatingSet with 3 samples
+
+```{r}
+ggcyto(MC_GatingSet[1], subset="root", aes(x="Nd145Di", y="Nd146Di")) + geom_hex(bins=100)
+```
+![](C:/Users/Macarena/CytometryInR/course/07_Transformations/homeworks/MacarenaLM-week07/ggplot2 asinhGML n9 TRUE.png)
+
+For me, the best method is the first one; changing the "m" seems that the separation of the populations is better than all plots got with both methods.
