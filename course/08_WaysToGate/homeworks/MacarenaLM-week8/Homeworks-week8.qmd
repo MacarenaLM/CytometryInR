@@ -1,0 +1,475 @@
+---
+Title: "week08-Ways to gate"
+Author: "Macarena López-Mayorga"
+date: 2026-06-25
+format: html
+---
+# Problem 1
+
+Let's load in the packages needed
+
+```{r}
+library(remotes)
+library(flowWorkspace)
+library(ggplot2)
+library(ggcyto)
+library(flowGate)
+library(openCyto)
+```
+
+Now, we have to locate the files:
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8")
+fcs_files <- list.files(StorageLocation, pattern=".fcs", full.names=TRUE)
+fcs_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs"
+
+Next, we are going to set up the GatingSet, to see the parameters that we are managing and select those that we are going to apply the biexponential transformation to stablish the GatingSet.
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(fcs_files, truncate_max_range=FALSE, transformation=FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+```
+
+```{r}
+SFC_Parameters <- colnames(SFC_GatingSet)
+SFC_Parameters
+```
+ [1] "TIME"  "FSC-A" "FSC-H" "FSC-W" "SSC-A" "SSC-H" "SSC-W" "FL1-A" "FL2-A" "FL4-A"
+
+ ```{r}
+ FluorophoresOnly <- SFC_Parameters[!stringr::str_detect(SFC_Parameters, "FSC|SSC|TIME")]
+ ```
+ ```{r}
+ Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+ ```
+ ```{r}
+ MyBiexTransform <- transformerList(FluorophoresOnly, Biexponential)
+ transform(SFC_GatingSet, MyBiexTransform)
+ ```
+ A GatingSet with 2 samples
+ 
+ Manually, we are going to select the different populations that we are interested on. We are going to check the plot and the cell number of the gate:
+ ```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="cell population", sample=1, dims=list("FSC-A", "SSC-A"), subset="root")
+ ```
+ Listening on http://127.0.0.1:7751
+done!
+$Gate
+Polygonal gate 'cell population' with 15 vertices in dimensions FSC-A and SSC-A
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate cell population.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet)
+```
+                                                                                 name       Population Parent Count ParentCount
+                                                                               <char>           <char> <char> <int>       <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population   root 71527      115746
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population   root 88417      115397
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="live", sample=1, dims=list("FSC-A", "FL4-A"), subset="cell population")
+```
+Listening on http://127.0.0.1:7751
+done!
+$Gate
+Rectangular gate 'live' with dimensions:
+  FSC-A: (117902.05210607,3622608.9753181)
+  FL4-A: (1746.8481445313,3085.130233647)
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate alive cells.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/live")
+```
+                                                                                 name            Population           Parent Count ParentCount
+                                                                               <char>                <char>           <char> <int>       <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/live /cell population 63821       71527
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/live /cell population 82813       88417
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="singlets", sample=1, dims=list("FSC-A", "FSC-H"), subset="live")
+```
+Listening on http://127.0.0.1:7751
+done!
+$Gate
+Polygonal gate 'singlets' with 16 vertices in dimensions FSC-A and FSC-H
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate singlets.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/live/singlets")
+```
+                                                                                name                     Population                Parent Count
+                                                                               <char>                         <char>                <char> <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets /cell population/live 48344
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets /cell population/live 71631
+   ParentCount
+         <int>
+1:       63821
+2:       82813
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="neg", sample=1, dims=list("FITC-A", "7-AAD-A"), subset="singlets")
+```
+
+Listening on http://127.0.0.1:7751
+done!
+$Gate
+Polygonal gate 'neg' with 16 vertices in dimensions FL1-A and FL4-A
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate neg.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/live/singlets/neg")
+```
+                                                                                 name                         Population
+                                                                               <char>                             <char>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets/neg
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets/neg
+                           Parent Count ParentCount
+                           <char> <int>       <int>
+1: /cell population/live/singlets 48301       48344
+2: /cell population/live/singlets 59408       71631
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="pos", sample=2, dims=list("FITC-A", "7-AAD-A"), subset="singlets")
+```
+Listening on http://127.0.0.1:7047
+done!
+$Gate
+Polygonal gate 'pos' with 13 vertices in dimensions FL1-A and FL4-A
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate PosAndNeg.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/live/singlets/pos")
+```
+                                                                                name                         Population                         Parent Count
+                                                                               <char>                             <char>                         <char> <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets/pos /cell population/live/singlets     0
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/live/singlets/pos /cell population/live/singlets 13330
+   ParentCount
+         <int>
+1:       78833
+2:       90805
+
+Now, we are going to save the GatingSet:
+
+```{r}
+StorageGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates")
+```
+
+```{r}
+save_gs(SFC_GatingSet, StorageGates)
+```
+Done
+To reload it, use 'load_gs' function
+
+Next, we want to load in:
+```{r}
+StorageGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates")
+SFC_GatingSet <- load_gs(StorageGates)
+```
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate PosAndNeg.png)
+
+We are going to add a new gate (intentionally misdraw it):
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="dead", sample=1, dims=list("FSC-A", "7-AAD-A"), subset="cell population")
+```
+Listening on http://127.0.0.1:7047
+done!
+$Gate
+Rectangular gate 'dead' with dimensions:
+  FSC-A: (1599784.3133434,4053211.9317637)
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate LiveAndDead.png)
+
+The cell numbers of this gate are unusually small:
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/dead")
+```
+                                                                                name            Population           Parent Count ParentCount
+                                                                               <char>                <char>           <char> <int>       <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/dead /cell population   411      104530
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/dead /cell population   835      112278
+
+So, we redraw the gate:
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="dead", sample=1, dims=list("FSC-A", "7-AAD-A"), subset="cell population", regate=TRUE)
+```
+Listening on http://127.0.0.1:7047
+done!
+$Gate
+Rectangular gate 'dead' with dimensions:
+  FSC-A: (90811.181854597,4771891.5)
+  FL4-A: (3096.5416614646,5177.3193359375)
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate LiveAndDead.png)
+
+```{r}
+gs_pop_get_count_fast(SFC_GatingSet) |> dplyr::filter(Population %in% "/cell population/dead")
+```
+                                                                                 name            Population           Parent Count ParentCount
+                                                                               <char>                <char>           <char> <int>       <int>
+1: WT interLimbs 11.5 7AAD SORT FSC 4 BSC35 TH5 - 11_[5 mL Tubes] Data Source - 1.fcs /cell population/dead /cell population  8910      104530
+2: YFP+7AAD INTERLIMBS 11.5 FSC 4 BSC35 TH9 SORT - 2_[5 mL Tubes] Data Source - 1.fcs /cell population/dead /cell population  6220      112278
+
+Now that the new gate is fixed, we can save the GatingSet again:
+```{r}
+StorageGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates")
+save_gs(SFC_GatingSet, StorageGates)
+```
+
+```{r}
+StorageGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates")
+SFC_GatingSet <- load_gs(StorageGates)
+```
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/Gate LiveAndDead.png)
+
+# Problem 2
+
+I use my own data for the previous problem. Now, I'am going to use the csv file from the course because I don't have one of my own. So, let's stablish the location of this file first:
+```{r}
+StorageLocation2 <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/data")
+GateTemplate <- list.files(StorageLocation2, pattern=".csv", full.names=TRUE)
+GateTemplate
+```
+[1] "C:/Users/Macarena/CytometryInR/course/08_WaysToGate/data/GatesUnmixed.csv"
+
+Now, we have to load the gates in:
+```{r}
+GatesToApply <- data.table::fread(GateTemplate)
+```
+
+And add the gates to the GatingSet
+```{r}
+TheFullTemplate <- gatingTemplate(GatesToApply)
+```
+Adding population:singlets
+Adding population:lymphocytes
+Adding population:live
+Adding population:Tcells
+Adding population:CD4
+Adding population:CD8
+
+```{r}
+TheFullTemplate
+```
+--- Gating Template: default
+	with  7  populations defined
+
+```{r}
+class(TheFullTemplate)
+```
+[1] "gatingTemplate"
+attr(,"package")
+[1] "openCyto"
+
+For the assemble of the GatingSet object, we will need the fcs files, so we have to locate them first:
+```{r}
+StorageLocation3 <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/data")
+fcs_files <- list.files(StorageLocation3, pattern=".fcs", full.names=TRUE)
+fcs_files
+```
+And now, we can assemble the GatingSet object:
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(fcs_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+```
+
+```{r}
+SFC_Parameters <- colnames(SFC_GatingSet)
+FluorophoresOnly <- SFC_Parameters[!stringr::str_detect(SFC_Parameters, "FSC|SSC|Time")]
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresOnly, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 6 samples
+
+And finally, we apply the template to the GatingSet
+```{r}
+gt_gating(TheFullTemplate, SFC_GatingSet)
+```
+Gating for 'singlets'
+done!
+done.
+Gating for 'lymphocytes'
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+The prior specification has no effect when usePrior=no
+Using the serial version of flowClust
+done!
+done.
+Gating for 'live'
+done!
+done.
+Gating for 'Tcells'
+done!
+done.
+Gating for 'CD8'
+done!
+done.
+Gating for 'CD4'
+done!
+done.
+finished.
+ 
+Finally, we can visualize the plots: 
+```{r}
+ggcyto::autoplot(SFC_GatingSet[[1]]) + theme_bw()
+ggcyto::autoplot(SFC_GatingSet[[2]]) + theme_bw()
+ggcyto::autoplot(SFC_GatingSet[[3]]) + theme_bw()
+ggcyto::autoplot(SFC_GatingSet[[4]]) + theme_bw()
+ggcyto::autoplot(SFC_GatingSet[[5]]) + theme_bw()
+ggcyto::autoplot(SFC_GatingSet[[6]]) + theme_bw()
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 1.png)
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 2.png)
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 3.png)
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 4.png)
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 5.png)
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/autoplot 6.png)
+
+# Problem 3
+
+We have already stablished singlets, lymphocytes, live, Tcells, CD4 and CD8 gates. I don't have too much knowledge about inmunology or how to recognize these different populations in the FACS since I don't work with this kind of samples, so I decided to add DN and the different TNFa and IFNg populations as gates based on an example that we saw during the course:
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="DN", sample=2, dims=list("BV650-A", "BUV805-A"), subset="Tcells")
+```
+Loading required package: shiny
+
+Listening on http://127.0.0.1:4784
+done!
+$Gate
+Polygonal gate 'DN' with 12 vertices in dimensions BV650-A and BUV805-A
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+```{r}
+flowGate::gs_gate_interactive(gs=SFC_GatingSet, filterId="TNFa IFNg", sample=2, dims=list("TNFa", "IFNg"), subset="CD4")
+```
+Listening on http://127.0.0.1:4784
+done!
+$Gate
+Quadrant gate 'TNFa IFNg' with dimensions:
+  PE-Dazzle594-A: 2748.208
+  BV750-A: 2696.551
+
+$Bins
+[1] 256
+
+$Scaling
+[1] "unused"
+
+Let's check if everything is OK:
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/New Gates Added.png)
+
+save the GatingSet
+```{r}
+StorageNewGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates 2")
+save_gs(SFC_GatingSet, StorageNewGates)
+```
+Done
+To reload it, use 'load_gs' function
+
+I have already close Positron and now I'm going to reload the GatingSet:
+```{r}
+StorageNewGates <- file.path("C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/save Gates 2")
+SFC_GatingSet <- load_gs(StorageNewGates)
+```
+
+```{r}
+plot(SFC_GatingSet)
+```
+![](C:/Users/Macarena/CytometryInR/course/08_WaysToGate/homeworks/MacarenaLM-week8/New Gates Added.png)
