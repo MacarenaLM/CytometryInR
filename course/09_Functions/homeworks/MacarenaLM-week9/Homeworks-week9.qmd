@@ -1,0 +1,343 @@
+---
+Title: "week09-It's raining functions!"
+Author: "Macarena López-Mayorga"
+date: 2026-07-21
+format: html
+---
+# Problem 1
+
+```{r}
+MyFirstAttempt <- function(How){message("This is going ", How)}
+```
+
+```{r}
+MyFirstAttempt(How = "well")
+```
+
+```{r}
+MyFirstAttempt <- function(How){
+    Message <- paste0("This is going ", How)
+    Message}
+```
+
+```{r}
+Adjectives <- c("well", "bad", "horrible", "great")
+MyList <- list()
+SavedList <- for (Name in Adjectives){
+    NewMessage <- MyFirstAttempt(How=Name)
+MyList[[Name]] <- NewMessage}
+MyList
+```
+$well
+[1] "This is going well"
+
+$bad
+[1] "This is going bad"
+
+$horrible
+[1] "This is going horrible"
+
+$great
+[1] "This is going great"
+
+# Problem 2
+First, I'm going to load in several packages:
+
+```{r}
+library(purrr)
+library(dplyr)
+library(flowWorkspace)
+library(flowGate)
+library(ggplot2)
+library(ggcyto)
+```
+
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/09_Functions/data")
+fcs_files <- list.files(StorageLocation, pattern=".fcs", full.names=TRUE)
+```
+
+```{r}
+fcs_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_04-INF124-7-00_01.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_04-INF149-4-00_01.fcs"
+[3] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_04-INF169-6-00_01.fcs"
+[4] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_05-INF019-0-00_01.fcs"
+[5] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_05-INF032-5-00_01.fcs"
+[6] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_05-INF180-9-00_01.fcs"
+[7] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_06-INF155-1-00_01.fcs"
+[8] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_06-INF158-4-00_01.fcs"
+[9] "C:/Users/Macarena/CytometryInR/course/09_Functions/data/CellCounts4L_AB_06-INF159-5-00_01.fcs"
+
+And set the GatingSet:
+```{r}
+MyCytoset <- load_cytoset_from_fcs(fcs_files, transformation=FALSE, truncate_max_range=FALSE)
+MyGatingSet <- GatingSet(MyCytoset)
+```
+```{r}
+MainDetectorsOnly <- c("V3-A", "B4-A", "R1-A")
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+MyBiexTransform <- transformerList(MainDetectorsOnly, Biexponential)
+transform(MyGatingSet, MyBiexTransform)
+```
+A GatingSet with 9 samples
+
+```{r}
+GatingTable <- tibble::tribble(
+    ~filterId,  ~dims,                  ~subset,
+    "CD45",     list("B4-A", "SSC-A"),  "root",
+    "CD19",     list("V3-A", "SSC-A"),  "CD45",
+    "CD14",     list("R1-A", "SSC-A"),  "CD45",
+    "TandNKcells",  list("V3-A", "SSC-A"),  "CD45",
+)
+```
+
+```{r}
+flowGate::gs_apply_gating_strategy(MyGatingSet, gating_strategy=GatingTable)
+```
+Loading required package: shiny
+
+Listening on http://127.0.0.1:4948
+done!
+
+Listening on http://127.0.0.1:4948
+done!
+
+Listening on http://127.0.0.1:4948
+done!
+
+Listening on http://127.0.0.1:4948
+done!
+[[1]]
+[[1]]$Gate
+Polygonal gate 'CD45' with 22 vertices in dimensions B4-A and SSC-A
+
+[[1]]$Bins
+[1] 256
+
+[[1]]$Scaling
+[1] "unused"
+
+
+[[2]]
+[[2]]$Gate
+Polygonal gate 'CD19' with 11 vertices in dimensions V3-A and SSC-A
+
+[[2]]$Bins
+[1] 256
+
+[[2]]$Scaling
+[1] "unused"
+
+
+[[3]]
+[[3]]$Gate
+Polygonal gate 'CD14' with 14 vertices in dimensions R1-A and SSC-A
+
+[[3]]$Bins
+[1] 256
+
+[[3]]$Scaling
+[1] "unused"
+
+
+[[4]]
+[[4]]$Gate
+Polygonal gate 'TandNKcells' with 19 vertices in dimensions V3-A and SSC-A
+
+[[4]]$Bins
+[1] 256
+
+[[4]]$Scaling
+[1] "unused"
+
+```{r}
+plot(MyGatingSet)
+```
+
+```{r}
+StorageGatingSet <- file.path("C:/Users/Macarena/CytometryInR/course/09_Functions/homeworks/MacarenaLM-week9/saved GatingSet")
+save_gs(MyGatingSet, StorageGatingSet)
+```
+
+```{r}
+StorageGatingSet <- file.path("C:/Users/Macarena/CytometryInR/course/09_Functions/homeworks/MacarenaLM-week9/saved GatingSet")
+MyGatingSet <- load_gs(StorageGatingSet)
+```
+
+```{r}
+CellConcentration <- function(x){keyword(x)}
+```
+
+```{r}
+KeywordList <- purrr::map(.x=MyGatingSet[1], .f=CellConcentration)
+head(KeywordList[[1]], 20)
+```
+$FCSversion
+[1] "3.0999999"
+
+$`$BEGINDATA`
+[1] "15152"
+
+$`$ENDDATA`
+[1] "8436079"
+
+$`$BEGINANALYSIS`
+[1] "0"
+
+$`$ENDANALYSIS`
+[1] "0"
+
+$`$BEGINSTEXT`
+[1] "0"
+
+$`$ENDSTEXT`
+[1] "0"
+
+$`$MODE`
+[1] "L"
+
+$`$BYTEORD`
+[1] "1,2,3,4"
+
+$`$DATATYPE`
+[1] "F"
+
+$`$PAR`
+[1] "61"
+
+$`$TOT`
+[1] "34512"
+
+$`$NEXTDATA`
+[1] "0"
+
+$`$TIMESTEP`
+[1] "0.0001"
+
+$`$DATE`
+[1] "30-Jul-2025"
+
+$`$BTIM`
+[1] "13:48:10.76"
+
+$`$ETIM`
+[1] "13:48:37.88"
+
+$`$OP`
+[1] "David Rach"
+
+$`$INST`
+[1] "UMBC"
+
+$`$CYT`
+[1] "Aurora"
+
+For the data.frame but adding more keywords:
+```{r}
+CellConcentration <- function(x, subset, dilutionMultiplier){
+    Date <- keyword(x)$`$DATE`
+    InstrumentSerial <- keyword(x)$`$CYTSN`
+    Mode <- keyword(x)$`$MODE`
+    BeginData <- keyword(x)$`$BEGINDATA`
+    EndData <- keyword(x)$`$ENDDATA`
+    TotalFileEvents <- keyword(x)$`$TOT`
+    Specimen <- keyword(x)$GUID
+    StartTime <- keyword(x)$`$BTIM`
+    EndTime <- keyword(x)$`$ETIM`
+    Volume <- keyword(x)$`$VOL`
+    Volume <- as.numeric(Volume)
+    EventsInTheGate <- gs_pop_get_data(x, subset)
+    Cells <- nrow(EventsInTheGate)[[1]]
+    Concentration <- (Cells*1000)/Volume
+    Concentration <- Concentration*dilutionMultiplier
+    Data <- data.frame(
+        Date=Date,
+        InstrumentSerial=InstrumentSerial,
+        Mode=Mode,
+        BeginData=BeginData,
+        EndData=EndData,
+        TotalFileEvents=TotalFileEvents,
+        Specimen=Specimen,
+        StartTime=StartTime,
+        EndTime=EndTime,
+        Volume=Volume,
+        Cells=Cells,
+        Concentration=Concentration
+    )
+    return(Data)
+}
+
+```
+
+```{r}
+df <- purrr::map(.x=MyGatingSet, .f=CellConcentration, subset="CD19", dilutionMultiplier=100) |> bind_rows()
+```
+
+```{r}
+df
+```
+         Date InstrumentSerial Mode BeginData EndData TotalFileEvents                              Specimen   StartTime     EndTime Volume Cells
+1 30-Jul-2025            V0333    L     15152 8436079           34512 CellCounts4L_AB_04-INF124-7-00_01.fcs 13:48:10.76 13:48:37.88  30.99   543
+2 30-Jul-2025            V0333    L     15148 4811211           19656 CellCounts4L_AB_04-INF149-4-00_01.fcs 13:33:43.49 13:34:09.95  30.93   317
+3 30-Jul-2025            V0333    L     15152 5707183           23328 CellCounts4L_AB_04-INF169-6-00_01.fcs 13:40:42.92 13:41:10.01  30.81   202
+4 04-Aug-2025            V0333    L     15156 6109299           24976 CellCounts4L_AB_05-INF019-0-00_01.fcs 13:41:23.34 13:41:50.51  30.47   402
+5 04-Aug-2025            V0333    L     15156 3142259           12816 CellCounts4L_AB_05-INF032-5-00_01.fcs 13:35:13.99 13:35:41.15  30.64   209
+6 04-Aug-2025            V0333    L     15156 2964627           12088 CellCounts4L_AB_05-INF180-9-00_01.fcs 13:48:19.41 13:48:46.83  30.73   363
+7 06-Aug-2025            V0333    L     15152 9041199           36992 CellCounts4L_AB_06-INF155-1-00_01.fcs 13:45:36.08 13:46:03.30  30.94   488
+8 06-Aug-2025            V0333    L     15152 5859439           23952 CellCounts4L_AB_06-INF158-4-00_01.fcs 13:39:27.95 13:39:54.12  30.03   456
+9 06-Aug-2025            V0333    L     15152 2160399            8792 CellCounts4L_AB_06-INF159-5-00_01.fcs 13:52:09.56 13:52:36.75  30.93   142
+  Concentration
+1     1752178.1
+2     1024894.9
+3      655631.3
+4     1319330.5
+5      682114.9
+6     1181256.1
+7     1577246.3
+8     1518481.5
+9      459101.2
+
+# Problem 3
+
+```{r}
+?lubridate
+```
+
+```{r}
+library(lubridate)
+```
+
+```{r}
+df$StartTime <- hms(df$StartTime)
+df$EndTime   <- hms(df$EndTime)
+
+df$Duration_min <- as.numeric(df$EndTime - df$StartTime, units = "mins")
+
+df$FlowRate <- df$Volume / df$Duration_min
+
+df
+```
+         Date InstrumentSerial Mode BeginData EndData TotalFileEvents                              Specimen      StartTime        EndTime Volume
+1 30-Jul-2025            V0333    L     15152 8436079           34512 CellCounts4L_AB_04-INF124-7-00_01.fcs 13H 48M 10.76S 13H 48M 37.88S  30.99
+2 30-Jul-2025            V0333    L     15148 4811211           19656 CellCounts4L_AB_04-INF149-4-00_01.fcs 13H 33M 43.49S  13H 34M 9.95S  30.93
+3 30-Jul-2025            V0333    L     15152 5707183           23328 CellCounts4L_AB_04-INF169-6-00_01.fcs 13H 40M 42.92S 13H 41M 10.01S  30.81
+4 04-Aug-2025            V0333    L     15156 6109299           24976 CellCounts4L_AB_05-INF019-0-00_01.fcs 13H 41M 23.34S 13H 41M 50.51S  30.47
+5 04-Aug-2025            V0333    L     15156 3142259           12816 CellCounts4L_AB_05-INF032-5-00_01.fcs 13H 35M 13.99S 13H 35M 41.15S  30.64
+6 04-Aug-2025            V0333    L     15156 2964627           12088 CellCounts4L_AB_05-INF180-9-00_01.fcs 13H 48M 19.41S 13H 48M 46.83S  30.73
+7 06-Aug-2025            V0333    L     15152 9041199           36992 CellCounts4L_AB_06-INF155-1-00_01.fcs 13H 45M 36.08S   13H 46M 3.3S  30.94
+8 06-Aug-2025            V0333    L     15152 5859439           23952 CellCounts4L_AB_06-INF158-4-00_01.fcs 13H 39M 27.95S 13H 39M 54.12S  30.03
+9 06-Aug-2025            V0333    L     15152 2160399            8792 CellCounts4L_AB_06-INF159-5-00_01.fcs  13H 52M 9.56S 13H 52M 36.75S  30.93
+  Cells Concentration Duration_min FlowRate
+1   543     1752178.1    0.4520000 68.56195
+2   317     1024894.9    0.4410000 70.13605
+3   202      655631.3    0.4515000 68.23920
+4   402     1319330.5    0.4528333 67.28745
+5   209      682114.9    0.4526667 67.68778
+6   363     1181256.1    0.4570000 67.24289
+7   488     1577246.3    0.4536667 68.19985
+8   456     1518481.5    0.4361667 68.84983
+9   142      459101.2    0.4531667 68.25303
+
+For the results obtained in "FlowRate", it seems that there is no great changes across days. The more "big" change is in the second file, that correspond to the same day of files 1 and 3.
