@@ -34,4 +34,21 @@ For previous course announcements emails, see the links below.
 
 - April 12, 2026 [Cytometry in R - Week # 09 - It's Raining Functions!](https://github.com/UMGCCCFCSR/CytometryInR/discussions/162) 
 
+- April 21, 2026 [No Class This Week](https://github.com/UMGCCCFCSR/CytometryInR/discussions/174)
+
+- April 28, 2026 [Cytometry in R - Week # 10 - Downsampling and Concatenation](https://github.com/UMGCCCFCSR/CytometryInR/discussions/179)
+
+- May 05, 2026 [Cytometry in R - Week # 11 - Data for Statistics](https://github.com/UMGCCCFCSR/CytometryInR/discussions/186)
+
+- May 31, 2026 [Cytometry in R - Course Update and Bonus Content](https://github.com/UMGCCCFCSR/CytometryInR/discussions/209)
+
+- July 09, 2026 [Cytometry in R - Course Restarting Next Week](https://github.com/UMGCCCFCSR/CytometryInR/discussions/219)
+
+- July 14, 2026 [Cytometry in R - Week # 12 - Spectral Signatures](https://github.com/UMGCCCFCSR/CytometryInR/discussions/220)
+
+- July 19, 2026 [Cytometry in R - Bonus Week #1 - Spectral Signatures](https://github.com/UMGCCCFCSR/CytometryInR/discussions/222)
+
+- July 27, 2026 [Cytometry in R - Week # 13 - Spectral Similarities](https://github.com/UMGCCCFCSR/CytometryInR/discussions/227)
+
+
 ![](images/YouTubeHex.png)
