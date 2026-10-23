@@ -1,0 +1,10 @@
+---
+Title: "week10-Downsampling and Concatenation"
+Author: "Macarena López-Mayorga"
+date: 2026-10-23
+format: html
+---
+
+# Problem 1
+I am going to use the dataset of the course for this problem
+```
