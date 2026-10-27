@@ -49,5 +49,19 @@ GatingTable <- tibble::tribble(
 ```
 
 ```{r}
-
+flowGate::gs_apply_gating_strategy(SFC_GatingSet, gating_strategy = GatingTable)
 ```
+
+```{r}
+plot(SFC_GatingSet)
+```
+![]("C:/Users/Macarena/CytometryInR/course/10_Downsampling/homeworks/MacarenaLM-week10/plot 1.png")
+
+I'm going to save the GatingSet to recover it whenever I need it:
+
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/10_Downsampling/homeworks/GatingSet")
+save_gs(SFC_GatingSet, StorageLocation)
+```
+Done
+To reload it, use 'load_gs' function
