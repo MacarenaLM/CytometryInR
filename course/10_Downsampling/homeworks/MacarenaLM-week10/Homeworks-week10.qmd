@@ -6,5 +6,48 @@ format: html
 ---
 
 # Problem 1
-I am going to use the dataset of the course for this problem
+I am going to use the dataset of the course for this problem:
+
+```{r}
+library(flowWorkspace)
+library(flowGate)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+```
+
+```{r}
+StorageLocation <- file.path("C:/Users/Macarena/CytometryInR/course/10_Downsampling/data")
+fcs_files <- list.files(StorageLocation, pattern= ".fcs", full.names = TRUE)
+fcs_files
+```
+[1] "C:/Users/Macarena/CytometryInR/course/10_Downsampling/data/2025_07_26_AB_02-INF052-00_Ctrl_Unmixed__Tcells.fcs"
+[2] "C:/Users/Macarena/CytometryInR/course/10_Downsampling/data/2025_07_26_AB_02-INF100-00_Ctrl_Unmixed__Tcells.fcs"
+[3] "C:/Users/Macarena/CytometryInR/course/10_Downsampling/data/2025_07_26_AB_02-INF179-00_Ctrl_Unmixed__Tcells.fcs"
+
+```{r}
+SFC_cytoset <- load_cytoset_from_fcs(fcs_files, truncate_max_range = FALSE, transformation = FALSE)
+SFC_GatingSet <- GatingSet(SFC_cytoset)
+SFC_Parameters <- colnames(SFC_GatingSet)
+FluorophoresOnly <- SFC_Parameters[!stringr::str_detect(SFC_Parameters, "FSC|SSC|Time")]
+Biexponential <- flowjo_biexp_trans(channelRange=4096, maxValue=262144, pos=4.5, neg=2, widthBasis=-500)
+MyBiexTransform <- transformerList(FluorophoresOnly, Biexponential)
+transform(SFC_GatingSet, MyBiexTransform)
+```
+A GatingSet with 3 samples
+
+```{r}
+GatingTable <- tibble::tribble(
+    ~filterId,     ~dims,                              ~subset,
+    "singlets",    list("FSC-A", "FSC-H"),              "root",
+    "live",        list("FSC-A", "Zombie NIR-A"),       "singlets",
+    "Tcells",      list("CD3", "CD45"),                 "live",
+    "CD4+",        list("CD8", "CD4"),                  "Tcells",
+    "CD8+",        list("CD8", "CD4"),                  "Tcells",
+    "DN",          list("CD8", "CD4"),                  "Tcells",
+)
+```
+
+```{r}
+
 ```
